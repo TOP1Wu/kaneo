@@ -7212,6 +7212,512 @@
         "required": [
           "revoked"
         ]
+      },
+      "OrgUnitList": {
+        "type": "object",
+        "properties": {
+          "units": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgUnit"
+            },
+            "description": "Every unit in the workspace as a flat list; build the tree from parentId."
+          }
+        },
+        "required": [
+          "units"
+        ]
+      },
+      "OrgUnit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "name": {
+            "type": "string"
+          },
+          "position": {
+            "type": "number"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrgUnitMember"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "parentId",
+          "name",
+          "position",
+          "members"
+        ]
+      },
+      "OrgUnitMember": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userImage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "isLeader": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "userId",
+          "userName",
+          "userImage",
+          "isLeader"
+        ]
+      },
+      "OrgScope": {
+        "type": "object",
+        "properties": {
+          "isWorkspaceAdmin": {
+            "type": "boolean"
+          },
+          "isInstanceAdmin": {
+            "type": "boolean"
+          },
+          "leadUnitIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Units where the caller is marked as a leader."
+          },
+          "subordinateUserIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Members of the units the caller leads and of all their descendant units, excluding the caller."
+          }
+        },
+        "required": [
+          "isWorkspaceAdmin",
+          "isInstanceAdmin",
+          "leadUnitIds",
+          "subordinateUserIds"
+        ]
+      },
+      "DeletedOrgUnit": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "LeaderBoard": {
+        "type": "object",
+        "properties": {
+          "people": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeaderBoardPerson"
+            }
+          },
+          "stuckThresholdDays": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "people",
+          "stuckThresholdDays"
+        ]
+      },
+      "LeaderBoardPerson": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userImage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "unitNames": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "doing": {
+                "type": "integer"
+              },
+              "overdue": {
+                "type": "integer"
+              },
+              "stuck": {
+                "type": "integer"
+              },
+              "total": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "doing",
+              "overdue",
+              "stuck",
+              "total"
+            ]
+          },
+          "cards": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LeaderBoardCard"
+            },
+            "description": "At most 100 cards, stuck first, then overdue, priority, and due date. counts cover all of them."
+          }
+        },
+        "required": [
+          "userId",
+          "userName",
+          "userImage",
+          "unitNames",
+          "counts",
+          "cards"
+        ]
+      },
+      "LeaderBoardCard": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "ticket": {
+            "type": "string",
+            "description": "Project key and task number, like web-12."
+          },
+          "title": {
+            "type": "string"
+          },
+          "projectId": {
+            "type": "string"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "dueDate": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "status": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "myRoles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roleId": {
+                  "type": "string"
+                },
+                "roleName": {
+                  "type": "string"
+                },
+                "progress": {
+                  "type": "string",
+                  "enum": [
+                    "todo",
+                    "doing",
+                    "done"
+                  ]
+                }
+              },
+              "required": [
+                "roleId",
+                "roleName",
+                "progress"
+              ]
+            }
+          },
+          "stuck": {
+            "type": "boolean"
+          },
+          "stuckReason": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "enum": [
+              "overdue",
+              "idle",
+              "last_role",
+              null
+            ],
+            "description": "overdue: past the due day and this person is not done. idle: a doing role unchanged for more than stuckThresholdDays. last_role: every other role is done and this person's role is not."
+          },
+          "stuckDays": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "Days since this person's most recent progress change, when stuck."
+          }
+        },
+        "required": [
+          "taskId",
+          "ticket",
+          "title",
+          "projectId",
+          "projectName",
+          "priority",
+          "dueDate",
+          "status",
+          "statusName",
+          "myRoles",
+          "stuck",
+          "stuckReason",
+          "stuckDays"
+        ]
+      },
+      "Dashboard": {
+        "type": "object",
+        "properties": {
+          "totals": {
+            "type": "object",
+            "properties": {
+              "tasks": {
+                "type": "integer"
+              },
+              "overdue": {
+                "type": "integer",
+                "description": "Open tasks past their due day with at least one member not done."
+              },
+              "readyForReview": {
+                "type": "integer",
+                "description": "Tasks whose members are all done but that are not in a done column yet."
+              },
+              "stuck": {
+                "type": "integer"
+              },
+              "byStatus": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/DashboardStatusCount"
+                }
+              }
+            },
+            "required": [
+              "tasks",
+              "overdue",
+              "readyForReview",
+              "stuck",
+              "byStatus"
+            ]
+          },
+          "workload": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "userId": {
+                  "type": "string"
+                },
+                "userName": {
+                  "type": "string"
+                },
+                "todo": {
+                  "type": "integer"
+                },
+                "doing": {
+                  "type": "integer"
+                },
+                "done": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "userId",
+                "userName",
+                "todo",
+                "doing",
+                "done"
+              ]
+            },
+            "description": "Tasks per person by personal progress. A person with several roles on a task counts once, at their furthest-behind progress."
+          },
+          "byProject": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "string"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "byStatus": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DashboardStatusCount"
+                  }
+                }
+              },
+              "required": [
+                "projectId",
+                "projectName",
+                "byStatus"
+              ]
+            }
+          },
+          "roleCompletion": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roleId": {
+                  "type": "string"
+                },
+                "roleName": {
+                  "type": "string"
+                },
+                "total": {
+                  "type": "integer"
+                },
+                "done": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "roleId",
+                "roleName",
+                "total",
+                "done"
+              ]
+            },
+            "description": "Member rows per task role and how many are done."
+          },
+          "stuckList": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "taskId": {
+                  "type": "string"
+                },
+                "ticket": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "stuckReason": {
+                  "type": "string",
+                  "enum": [
+                    "overdue",
+                    "idle",
+                    "last_role"
+                  ]
+                },
+                "stuckDays": {
+                  "type": "integer"
+                },
+                "blockedBy": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "userId": {
+                        "type": "string"
+                      },
+                      "userName": {
+                        "type": "string"
+                      },
+                      "roleName": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "userId",
+                      "userName",
+                      "roleName"
+                    ]
+                  }
+                }
+              },
+              "required": [
+                "taskId",
+                "ticket",
+                "title",
+                "projectName",
+                "stuckReason",
+                "stuckDays",
+                "blockedBy"
+              ]
+            },
+            "description": "At most 50 stuck open tasks, longest stuck first."
+          }
+        },
+        "required": [
+          "totals",
+          "workload",
+          "byProject",
+          "roleCompletion",
+          "stuckList"
+        ]
+      },
+      "DashboardStatusCount": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "statusName": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "status",
+          "statusName",
+          "count"
+        ]
       }
     },
     "parameters": {}
@@ -30172,6 +30678,825 @@
           },
           "404": {
             "description": "User or API key not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/org-unit/{workspaceId}": {
+      "get": {
+        "operationId": "listOrgUnits",
+        "tags": [
+          "Org Units"
+        ],
+        "summary": "List org units",
+        "description": "Every org unit in the workspace with its members, as a flat list ordered by position. Any workspace member can read it.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The workspace's org units",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUnitList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createOrgUnit",
+        "tags": [
+          "Org Units"
+        ],
+        "summary": "Create org unit",
+        "description": "Create a unit at the end of its siblings. Requires workspace:manage_settings (workspace owners and admins) or instance admin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "description": "Unit name, 1-100 characters after trimming."
+                  },
+                  "parentId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 1,
+                    "description": "Parent unit in the same workspace. Omit or null for a root."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created unit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUnit"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, or the parent is not in this workspace",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/org-unit/{workspaceId}/my-scope": {
+      "get": {
+        "operationId": "getMyOrgScope",
+        "tags": [
+          "Org Units"
+        ],
+        "summary": "Get my org scope",
+        "description": "What the caller can see through the org structure: admin flags, the units they lead, and everyone below them (recursively), excluding themselves.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The caller's org scope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgScope"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/org-unit/{id}": {
+      "put": {
+        "operationId": "updateOrgUnit",
+        "tags": [
+          "Org Units"
+        ],
+        "summary": "Update org unit",
+        "description": "Rename, move, or reorder a unit. Requires workspace:manage_settings (workspace owners and admins) or instance admin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100,
+                    "description": "Unit name, 1-100 characters after trimming."
+                  },
+                  "parentId": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "minLength": 1,
+                    "description": "New parent unit, or null to make it a root. A unit can't move under itself or one of its descendants (400)."
+                  },
+                  "position": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 1000000,
+                    "description": "Sort order among siblings, lowest first."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated unit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUnit"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, a parent outside the workspace, or a move under the unit itself or its descendants",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Org unit not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "delete": {
+        "operationId": "deleteOrgUnit",
+        "tags": [
+          "Org Units"
+        ],
+        "summary": "Delete org unit",
+        "description": "Delete a unit without child units, with its memberships. Requires workspace:manage_settings (workspace owners and admins) or instance admin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The deleted unit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedOrgUnit"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Org unit not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The unit still has child units",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/org-unit/{id}/members": {
+      "put": {
+        "operationId": "replaceOrgUnitMembers",
+        "tags": [
+          "Org Units"
+        ],
+        "summary": "Replace org unit members",
+        "description": "Replace the unit's whole member list and leader flags. Requires workspace:manage_settings (workspace owners and admins) or instance admin.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "members": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "userId": {
+                          "type": "string",
+                          "minLength": 1
+                        },
+                        "isLeader": {
+                          "type": "boolean"
+                        }
+                      },
+                      "required": [
+                        "userId",
+                        "isLeader"
+                      ]
+                    },
+                    "maxItems": 500,
+                    "description": "The unit's complete member list. Each userId must be a member of the workspace and appear once."
+                  }
+                },
+                "required": [
+                  "members"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The unit with its new members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrgUnit"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, a duplicate user, or a user who is not a workspace member",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Org unit not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/leader-board/{workspaceId}": {
+      "get": {
+        "operationId": "getLeaderBoard",
+        "tags": [
+          "Leader Board"
+        ],
+        "summary": "Get leader board",
+        "description": "One column per person in the scope, with their open tasks across every active project of the workspace. A task belongs to a person when they are its assignee or one of its members; completed and archived tasks are left out. Leaders also see their subordinates' tasks in projects they can't open themselves. Each person carries at most 100 cards; counts cover all of their matching tasks.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "mine",
+                "unit",
+                "all"
+              ],
+              "default": "mine",
+              "description": "mine: the caller and everyone below them in the org structure. unit: a unit and its descendants (leaders of it or its parents, and admins). all: every workspace member (workspace or instance admins)."
+            },
+            "required": false,
+            "description": "mine: the caller and everyone below them in the org structure. unit: a unit and its descendants (leaders of it or its parents, and admins). all: every workspace member (workspace or instance admins).",
+            "name": "scope",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Org unit for scope=unit."
+            },
+            "required": false,
+            "description": "Org unit for scope=unit.",
+            "name": "unitId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated project IDs to include."
+            },
+            "required": false,
+            "description": "Comma-separated project IDs to include.",
+            "name": "projectIds",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated task role IDs; keeps tasks where the person holds one of them."
+            },
+            "required": false,
+            "description": "Comma-separated task role IDs; keeps tasks where the person holds one of them.",
+            "name": "roleIds",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated personal progress (todo, doing, done), using the person's furthest-behind role on the task."
+            },
+            "required": false,
+            "description": "Comma-separated personal progress (todo, doing, done), using the person's furthest-behind role on the task.",
+            "name": "progress",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated task priorities."
+            },
+            "required": false,
+            "description": "Comma-separated task priorities.",
+            "name": "priority",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true",
+                "false"
+              ],
+              "description": "true keeps only overdue cards, false only cards that are not."
+            },
+            "required": false,
+            "description": "true keeps only overdue cards, false only cards that are not.",
+            "name": "overdue",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The leader board",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LeaderBoard"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query, or scope=unit without unitId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing project:read or task:read, or not allowed to use this scope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace or org unit not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/dashboard/{workspaceId}": {
+      "get": {
+        "operationId": "getDashboard",
+        "tags": [
+          "Dashboard"
+        ],
+        "summary": "Get dashboard",
+        "description": "Metrics over the tasks that people in the scope take part in (as assignee or member), across every active project of the workspace. Each task counts once; archived tasks are left out. Leaders also see their subordinates' tasks in projects they can't open themselves.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "enum": [
+                "mine",
+                "unit",
+                "all"
+              ],
+              "default": "mine",
+              "description": "mine: the caller and everyone below them in the org structure. unit: a unit and its descendants (leaders of it or its parents, and admins). all: every workspace member (workspace or instance admins)."
+            },
+            "required": false,
+            "description": "mine: the caller and everyone below them in the org structure. unit: a unit and its descendants (leaders of it or its parents, and admins). all: every workspace member (workspace or instance admins).",
+            "name": "scope",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Org unit for scope=unit."
+            },
+            "required": false,
+            "description": "Org unit for scope=unit.",
+            "name": "unitId",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Comma-separated project IDs to include."
+            },
+            "required": false,
+            "description": "Comma-separated project IDs to include.",
+            "name": "projectIds",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Only tasks created at or after this date (YYYY-MM-DD, UTC) or date-time."
+            },
+            "required": false,
+            "description": "Only tasks created at or after this date (YYYY-MM-DD, UTC) or date-time.",
+            "name": "from",
+            "in": "query"
+          },
+          {
+            "schema": {
+              "type": "string",
+              "description": "Only tasks created on or before this date (YYYY-MM-DD, UTC, whole day) or date-time."
+            },
+            "required": false,
+            "description": "Only tasks created on or before this date (YYYY-MM-DD, UTC, whole day) or date-time.",
+            "name": "to",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The dashboard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Dashboard"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query, or scope=unit without unitId",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing project:read or task:read, or not allowed to use this scope",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace or org unit not found",
             "content": {
               "application/json": {
                 "schema": {

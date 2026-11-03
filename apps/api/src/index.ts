@@ -33,7 +33,9 @@ import column from "./column";
 import comment from "./comment";
 import config from "./config";
 import customField from "./custom-field";
+import dashboard from "./dashboard";
 import taskMember from "./task-member";
+import { registerExtraEditGuard } from "./task-member/can-edit-member";
 import taskRole from "./task-role";
 import db, { getDatabase, schema } from "./database";
 import { apiErrorSchema } from "./errors/api-error-schema";
@@ -62,11 +64,14 @@ import { stopActiveImports } from "./import/runs/stop-active-imports";
 import getInstanceStatus from "./instance/controllers/get-instance-status";
 import invitation from "./invitation";
 import label from "./label";
+import leaderBoard from "./leader-board";
+import { leaderEditGuard } from "./leader-board/leader-edit-guard";
 import mattermostIntegration from "./mattermost-integration";
 import mcpRoutes, { mcpWellKnownRoutes } from "./mcp";
 import { migrateColumns } from "./migrations/column-migration";
 import notification from "./notification";
 import notificationPreferences from "./notification-preferences";
+import orgUnit from "./org-unit";
 import oauth from "./oauth";
 import { createRoute, errorResponse, jsonResponse, z } from "./openapi";
 import { initializePlugins, integrationPlugins } from "./plugins";
@@ -879,6 +884,9 @@ export function createApp() {
   const importApi = api.route("/import", importRoutes);
   const userApi = api.route("/user", user);
   const adminApi = api.route("/admin", admin);
+  const orgUnitApi = api.route("/org-unit", orgUnit);
+  const leaderBoardApi = api.route("/leader-board", leaderBoard);
+  const dashboardApi = api.route("/dashboard", dashboard);
 
   app.route(
     "/",
@@ -1018,6 +1026,9 @@ export function createApp() {
     workflowRuleApi,
     workspaceApi,
     customFieldApi,
+    orgUnitApi,
+    leaderBoardApi,
+    dashboardApi,
     taskRoleApi,
     taskMemberApi,
     importApi,
@@ -1119,6 +1130,10 @@ export async function startServer(
   });
 }
 
+// Module scope, not runStartupTasks: tests build the app via createApp() without
+// startup tasks, and the guard must stay registered once (tests may swap it).
+registerExtraEditGuard(leaderEditGuard);
+
 const createdApp = createApp();
 const {
   app,
@@ -1155,6 +1170,9 @@ const {
   workflowRuleApi,
   workspaceApi,
   customFieldApi,
+  orgUnitApi,
+  leaderBoardApi,
+  dashboardApi,
   taskRoleApi,
   taskMemberApi,
   importApi,
@@ -1200,6 +1218,9 @@ export type AppType =
   | typeof invitationApi
   | typeof workspaceApi
   | typeof customFieldApi
+  | typeof orgUnitApi
+  | typeof leaderBoardApi
+  | typeof dashboardApi
   | typeof taskRoleApi
   | typeof taskMemberApi
   | typeof importApi
