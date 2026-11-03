@@ -13,6 +13,7 @@ import {
   workspaceUserTable,
 } from "../../database/schema";
 import type { DbOrTx } from "../../project-access/db-or-tx";
+import { clearWorkspaceTaskMembers } from "../../task-role/clear-workspace-task-members";
 import { instanceAdminRoleSql } from "../../utils/instance-admin-role";
 import {
   formatBlockedWorkspacesMessage,
@@ -100,6 +101,7 @@ export async function deleteAccountData(userId: string, database: DbOrTx = db) {
       userId,
       ...admins.map((admin) => admin.userId),
     ]);
+    await clearWorkspaceTaskMembers(database, plan.workspaceIdsToDelete);
     await database
       .delete(workspaceTable)
       .where(inArray(workspaceTable.id, plan.workspaceIdsToDelete));
