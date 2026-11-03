@@ -3997,8 +3997,7 @@
 			"loadError": "加载失败",
 			"scope": {
 				"label": "范围",
-				"mine": "我的下属",
-				"unit": "某部门",
+				"mine": "我和下属",
 				"all": "全部",
 				"pickUnit": "选择部门"
 			},
@@ -4012,6 +4011,8 @@
 		},
 		"leaderBoard": {
 			"title": "负责人看板",
+			"me": "我",
+			"meColumn": "{{name}}（我）",
 			"threshold_other": "进行中超过 {{count}} 天无变化算停滞。",
 			"noUnit": "未分配部门",
 			"counts": {

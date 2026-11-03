@@ -59,8 +59,10 @@ type Entry = {
   createdAt: number;
 };
 
+/** Open work first, the person's finished cards last (and first to be cut). */
 function compareEntries(a: Entry, b: Entry) {
   return (
+    Number(a.progress === "done") - Number(b.progress === "done") ||
     Number(b.card.stuck) - Number(a.card.stuck) ||
     Number(b.overdue) - Number(a.overdue) ||
     (PRIORITY_RANK[b.card.priority] ?? 0) -

@@ -5,6 +5,8 @@ import type { LeaderBoardCard as Card } from "@/fetchers/leader-board/get-leader
 import { cn } from "@/lib/cn";
 import { getPriorityLabel } from "@/lib/i18n/domain";
 import { getPriorityIcon } from "@/lib/priority";
+import { PROGRESS_TONE } from "@/lib/task-member/progress-tone";
+import { isCardDone } from "./card-progress";
 import { stuckReasonText } from "./stuck-reason-text";
 
 type LeaderBoardCardProps = {
@@ -15,15 +17,19 @@ type LeaderBoardCardProps = {
 export function LeaderBoardCard({ card, onOpen }: LeaderBoardCardProps) {
   const { t } = useTranslation();
   const reason = stuckReasonText(card, t);
+  const done = isCardDone(card);
 
   return (
     <button
       type="button"
       data-task-id={card.taskId}
+      data-done={done || undefined}
       onClick={() => onOpen(card)}
       className={cn(
-        "flex w-full flex-col gap-1.5 rounded-lg border bg-board-card p-2.5 text-left shadow-xs/5 outline-none transition-colors hover:border-board-card-border-hover focus-visible:ring-2 focus-visible:ring-ring",
+        "flex w-full shrink-0 flex-col gap-1.5 rounded-lg border bg-board-card p-2.5 text-left shadow-xs/5 outline-none transition-[border-color,opacity] hover:border-board-card-border-hover focus-visible:ring-2 focus-visible:ring-ring",
         card.stuck ? "border-destructive/40" : "border-board-card-border",
+        // Finished for this person: still reachable, but out of the way.
+        done && "opacity-55 hover:opacity-100 focus-visible:opacity-100",
       )}
     >
       <span className="flex items-center gap-1.5 text-muted-foreground text-xs">
@@ -31,19 +37,21 @@ export function LeaderBoardCard({ card, onOpen }: LeaderBoardCardProps) {
         <span aria-hidden="true">·</span>
         <span className="shrink-0 font-mono">{card.ticket}</span>
       </span>
-      <span className="line-clamp-2 font-medium text-[13px] text-board-title leading-[18px]">
+      <span className="break-words font-medium text-[13px] text-board-title leading-[18px]">
         {card.title}
       </span>
       <span className="flex flex-wrap items-center gap-1">
         {card.myRoles.map((role) => (
           <span
             key={role.roleId}
-            className="inline-flex h-5 items-center gap-1 rounded-md bg-muted px-1.5 text-[11px] text-foreground/80"
+            data-progress={role.progress}
+            className={cn(
+              "inline-flex h-5 items-center gap-1 rounded-md px-1.5 text-[11px]",
+              PROGRESS_TONE[role.progress].badge,
+            )}
           >
-            {role.roleName}
-            <span className="text-muted-foreground">
-              {t(`tasks:members.progress.${role.progress}`)}
-            </span>
+            <span className="text-foreground/80">{role.roleName}</span>
+            {t(`tasks:members.progress.${role.progress}`)}
           </span>
         ))}
       </span>

@@ -7500,7 +7500,7 @@
               "integer",
               "null"
             ],
-            "description": "Days since this person's most recent progress change, when stuck."
+            "description": "When stuck: whole days past the due date for overdue, otherwise days since this person's most recent change on the stuck rows."
           }
         },
         "required": [
@@ -7722,6 +7722,10 @@
           "statusName": {
             "type": "string"
           },
+          "isFinal": {
+            "type": "boolean",
+            "description": "True when this status is a done (final) column in any project counted here."
+          },
           "count": {
             "type": "integer"
           }
@@ -7729,6 +7733,7 @@
         "required": [
           "status",
           "statusName",
+          "isFinal",
           "count"
         ]
       }

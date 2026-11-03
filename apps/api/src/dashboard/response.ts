@@ -5,6 +5,10 @@ const statusCountSchema = z
   .object({
     status: z.string(),
     statusName: z.string(),
+    isFinal: z.boolean().openapi({
+      description:
+        "True when this status is a done (final) column in any project counted here.",
+    }),
     count: z.number().int(),
   })
   .openapi("DashboardStatusCount");

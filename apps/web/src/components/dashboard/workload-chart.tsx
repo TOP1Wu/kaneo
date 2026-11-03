@@ -1,13 +1,13 @@
 import { useTranslation } from "react-i18next";
 import type { Dashboard } from "@/fetchers/dashboard/get-dashboard";
+import { cn } from "@/lib/cn";
+import {
+  PROGRESS_ORDER,
+  PROGRESS_TONE,
+  PROGRESS_TRACK,
+} from "@/lib/task-member/progress-tone";
 import { ChartCard } from "./chart-card";
 import { percent } from "./chart-helpers";
-
-const SEGMENTS = [
-  { key: "done", className: "bg-success" },
-  { key: "doing", className: "bg-info" },
-  { key: "todo", className: "bg-muted-foreground/30" },
-] as const;
 
 /** One horizontal stacked bar per person, scaled to the busiest person. */
 export function WorkloadChart({
@@ -30,10 +30,10 @@ export function WorkloadChart({
         className="flex gap-3 text-muted-foreground text-xs"
         aria-hidden="true"
       >
-        {SEGMENTS.map((segment) => (
-          <li key={segment.key} className="flex items-center gap-1.5">
-            <span className={`size-2 rounded-sm ${segment.className}`} />
-            {t(`tasks:members.progress.${segment.key}`)}
+        {PROGRESS_ORDER.map((key) => (
+          <li key={key} className="flex items-center gap-1.5">
+            <span className={cn("size-2 rounded-sm", PROGRESS_TONE[key].bar)} />
+            {t(`tasks:members.progress.${key}`)}
           </li>
         ))}
       </ul>
@@ -61,20 +61,22 @@ export function WorkloadChart({
                   role="img"
                   aria-label={summary}
                   title={summary}
-                  className="flex h-4 min-w-0 flex-1 overflow-hidden rounded bg-muted/50"
+                  className={cn(
+                    "flex h-4 min-w-0 flex-1 overflow-hidden rounded",
+                    PROGRESS_TRACK,
+                  )}
                 >
                   <div
                     className="flex h-full"
                     style={{ width: `${percent(total, max)}%` }}
                   >
-                    {SEGMENTS.map((segment) =>
-                      row[segment.key] > 0 ? (
+                    {PROGRESS_ORDER.map((key) =>
+                      row[key] > 0 ? (
                         <span
-                          key={segment.key}
-                          className={segment.className}
-                          style={{
-                            width: `${percent(row[segment.key], total)}%`,
-                          }}
+                          key={key}
+                          data-progress={key}
+                          className={PROGRESS_TONE[key].bar}
+                          style={{ width: `${percent(row[key], total)}%` }}
                         />
                       ) : null,
                     )}

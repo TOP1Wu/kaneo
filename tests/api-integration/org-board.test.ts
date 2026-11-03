@@ -657,7 +657,8 @@ describe("API integration: leader board", () => {
       ticket: `open-${tasks.overdueTask.number}`,
       stuck: true,
       stuckReason: "overdue",
-      stuckDays: 2,
+      // Due three days ago: days past due, not the two since Sam's last edit.
+      stuckDays: 3,
       myRoles: [{ roleId: org.roles.dev, roleName: "开发", progress: "todo" }],
     });
     expect(byId.get(tasks.secretStaffTask.id)).toMatchObject({
@@ -833,7 +834,12 @@ type Dashboard = {
     overdue: number;
     readyForReview: number;
     stuck: number;
-    byStatus: { status: string; statusName: string; count: number }[];
+    byStatus: {
+      status: string;
+      statusName: string;
+      isFinal: boolean;
+      count: number;
+    }[];
   };
   workload: {
     userId: string;
@@ -889,10 +895,20 @@ describe("API integration: dashboard", () => {
       stuck: 3,
     });
     expect(dashboard.totals.byStatus).toEqual([
-      { status: "to-do", statusName: "To Do", count: 4 },
-      { status: "in-progress", statusName: "In Progress", count: 1 },
-      { status: "in-review", statusName: "In Review", count: 1 },
-      { status: "done", statusName: "Done", count: 1 },
+      { status: "to-do", statusName: "To Do", isFinal: false, count: 4 },
+      {
+        status: "in-progress",
+        statusName: "In Progress",
+        isFinal: false,
+        count: 1,
+      },
+      {
+        status: "in-review",
+        statusName: "In Review",
+        isFinal: false,
+        count: 1,
+      },
+      { status: "done", statusName: "Done", isFinal: true, count: 1 },
     ]);
 
     const workload = new Map(
@@ -949,7 +965,7 @@ describe("API integration: dashboard", () => {
     ]);
     expect(dashboard.stuckList[1]).toMatchObject({
       stuckReason: "overdue",
-      stuckDays: 2,
+      stuckDays: 3,
       blockedBy: [
         { userId: org.staff.id, userName: "Sam Staff", roleName: "开发" },
       ],

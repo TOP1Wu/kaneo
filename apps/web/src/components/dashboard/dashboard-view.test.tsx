@@ -7,6 +7,7 @@ import {
 } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 import type { Dashboard } from "@/fetchers/dashboard/get-dashboard";
+import { PROGRESS_TONE } from "@/lib/task-member/progress-tone";
 import { DashboardView } from "./dashboard-view";
 
 vi.mock("react-i18next", () => ({
@@ -27,9 +28,14 @@ const data: Dashboard = {
     readyForReview: 2,
     stuck: 4,
     byStatus: [
-      { status: "to-do", statusName: "To Do", count: 6 },
-      { status: "in-progress", statusName: "In Progress", count: 7 },
-      { status: "done", statusName: "Done", count: 2 },
+      { status: "to-do", statusName: "To Do", isFinal: false, count: 6 },
+      {
+        status: "in-progress",
+        statusName: "In Progress",
+        isFinal: false,
+        count: 7,
+      },
+      { status: "done", statusName: "Done", isFinal: true, count: 2 },
     ],
   },
   workload: [
@@ -40,7 +46,10 @@ const data: Dashboard = {
     {
       projectId: "p1",
       projectName: "官网改版",
-      byStatus: [{ status: "to-do", statusName: "To Do", count: 6 }],
+      byStatus: [
+        { status: "to-do", statusName: "To Do", isFinal: false, count: 6 },
+        { status: "done", statusName: "Done", isFinal: true, count: 2 },
+      ],
     },
   ],
   roleCompletion: [
@@ -78,6 +87,32 @@ describe("DashboardView", () => {
     const rows = within(workload).getAllByRole("img");
     expect(rows[0]).toHaveAccessibleName(expect.stringContaining('"total":8'));
     expect(rows[1]).toHaveAccessibleName(expect.stringContaining('"total":7'));
+  });
+
+  it("colors personal progress with the shared tones", () => {
+    render(<DashboardView data={data} onOpenTask={vi.fn()} />);
+    const workload = screen.getByRole("region", {
+      name: "workspace:dashboard.workload.title",
+    });
+    for (const key of ["done", "doing", "todo"] as const) {
+      const segment = workload.querySelector(`[data-progress="${key}"]`);
+      expect(segment).toHaveClass(PROGRESS_TONE[key].bar);
+    }
+    const meter = screen.getByRole("meter").firstElementChild;
+    expect(meter).toHaveClass(PROGRESS_TONE.done.bar);
+  });
+
+  it("greens only the final column in the project chart", () => {
+    render(<DashboardView data={data} onOpenTask={vi.fn()} />);
+    const chart = screen.getByRole("region", {
+      name: "workspace:dashboard.byProject.title",
+    });
+    const segments = [
+      ...chart.querySelectorAll<HTMLElement>("[role=img] span"),
+    ].map((segment) => segment.className);
+    expect(segments).toHaveLength(2);
+    expect(segments[1]).toBe(PROGRESS_TONE.done.bar);
+    expect(segments[0]).not.toMatch(/success|info|blue|green|emerald/);
   });
 
   it("hides roles without members from the completion chart", () => {

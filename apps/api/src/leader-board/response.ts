@@ -30,7 +30,7 @@ export const leaderBoardCardSchema = z
     stuckReason: stuckReasonSchema,
     stuckDays: z.number().int().nullable().openapi({
       description:
-        "Days since this person's most recent progress change, when stuck.",
+        "When stuck: whole days past the due date for overdue, otherwise days since this person's most recent change on the stuck rows.",
     }),
   })
   .openapi("LeaderBoardCard");

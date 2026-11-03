@@ -5,10 +5,12 @@ import type {
   LeaderBoardPerson,
 } from "@/fetchers/leader-board/get-leader-board";
 import { cn } from "@/lib/cn";
+import { openCardsFirst } from "./card-progress";
 import { LeaderBoardCard } from "./leader-board-card";
 
 type LeaderBoardColumnProps = {
   person: LeaderBoardPerson;
+  isMe?: boolean;
   onOpen: (card: Card) => void;
 };
 
@@ -29,14 +31,22 @@ function Count({
   );
 }
 
-export function LeaderBoardColumn({ person, onOpen }: LeaderBoardColumnProps) {
+export function LeaderBoardColumn({
+  person,
+  isMe = false,
+  onOpen,
+}: LeaderBoardColumnProps) {
   const { t } = useTranslation();
   const hidden = person.counts.total - person.cards.length;
+  const cards = openCardsFirst(person.cards);
+  const label = isMe
+    ? t("workspace:leaderBoard.meColumn", { name: person.userName })
+    : person.userName;
 
   return (
     <section
-      aria-label={person.userName}
-      className="flex h-full w-72 shrink-0 flex-col rounded-xl bg-board-lane"
+      aria-label={label}
+      className="flex h-full w-[300px] shrink-0 flex-col rounded-xl bg-board-lane"
     >
       <header className="flex flex-col gap-1.5 px-3 pt-3 pb-2">
         <div className="flex items-center gap-2">
@@ -47,8 +57,16 @@ export function LeaderBoardColumn({ person, onOpen }: LeaderBoardColumnProps) {
             className="size-6"
           />
           <div className="min-w-0 flex-1">
-            <h2 className="truncate font-semibold text-sm">
-              {person.userName}
+            <h2 className="flex min-w-0 items-center gap-1.5 font-semibold text-sm">
+              <span className="truncate">{person.userName}</span>
+              {isMe && (
+                <span
+                  aria-hidden="true"
+                  className="shrink-0 rounded-md bg-primary px-1.5 py-px font-medium text-[10px] text-primary-foreground"
+                >
+                  {t("workspace:leaderBoard.me")}
+                </span>
+              )}
             </h2>
             <p className="truncate text-muted-foreground text-xs">
               {person.unitNames.length > 0
@@ -75,12 +93,12 @@ export function LeaderBoardColumn({ person, onOpen }: LeaderBoardColumnProps) {
         </div>
       </header>
       <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto px-2 pb-2">
-        {person.cards.length === 0 ? (
+        {cards.length === 0 ? (
           <p className="px-1 py-2 text-muted-foreground text-xs">
             {t("workspace:leaderBoard.noCards")}
           </p>
         ) : (
-          person.cards.map((card) => (
+          cards.map((card) => (
             <LeaderBoardCard key={card.taskId} card={card} onOpen={onOpen} />
           ))
         )}
