@@ -14,10 +14,14 @@ import {
   invitationTable,
   labelTable,
   notificationTable,
+  orgUnitMemberTable,
+  orgUnitTable,
   projectTable,
   sessionTable,
+  taskMemberTable,
   taskRelationTable,
   taskReminderSentTable,
+  taskRoleTable,
   taskTable,
   teamMemberTable,
   teamTable,
@@ -48,6 +52,8 @@ export const userTableRelations = relations(userTable, ({ many, one }) => ({
   notificationWorkspaceRules: many(userNotificationWorkspaceRuleTable),
   sentInvitations: many(invitationTable),
   apikeys: many(apikeyTable),
+  taskMemberships: many(taskMemberTable, { relationName: "taskMemberUser" }),
+  orgUnitMemberships: many(orgUnitMemberTable),
 }));
 
 export const sessionTableRelations = relations(sessionTable, ({ one }) => ({
@@ -78,6 +84,8 @@ export const workspaceTableRelations = relations(
     assets: many(assetTable),
     invitations: many(invitationTable),
     notificationWorkspaceRules: many(userNotificationWorkspaceRuleTable),
+    taskRoles: many(taskRoleTable),
+    orgUnits: many(orgUnitTable),
   }),
 );
 
@@ -158,6 +166,7 @@ export const taskTableRelations = relations(taskTable, ({ one, many }) => ({
   targetRelations: many(taskRelationTable, { relationName: "targetTask" }),
   remindersSent: many(taskReminderSentTable),
   customFieldValues: many(customFieldValueTable),
+  members: many(taskMemberTable),
 }));
 
 export const timeEntryTableRelations = relations(timeEntryTable, ({ one }) => ({
@@ -416,6 +425,71 @@ export const customFieldValueTableRelations = relations(
     task: one(taskTable, {
       fields: [customFieldValueTable.taskId],
       references: [taskTable.id],
+    }),
+  }),
+);
+
+export const taskRoleTableRelations = relations(
+  taskRoleTable,
+  ({ one, many }) => ({
+    workspace: one(workspaceTable, {
+      fields: [taskRoleTable.workspaceId],
+      references: [workspaceTable.id],
+    }),
+    members: many(taskMemberTable),
+  }),
+);
+
+export const taskMemberTableRelations = relations(
+  taskMemberTable,
+  ({ one }) => ({
+    task: one(taskTable, {
+      fields: [taskMemberTable.taskId],
+      references: [taskTable.id],
+    }),
+    user: one(userTable, {
+      fields: [taskMemberTable.userId],
+      references: [userTable.id],
+      relationName: "taskMemberUser",
+    }),
+    role: one(taskRoleTable, {
+      fields: [taskMemberTable.roleId],
+      references: [taskRoleTable.id],
+    }),
+    updatedByUser: one(userTable, {
+      fields: [taskMemberTable.updatedBy],
+      references: [userTable.id],
+    }),
+  }),
+);
+
+export const orgUnitTableRelations = relations(
+  orgUnitTable,
+  ({ one, many }) => ({
+    workspace: one(workspaceTable, {
+      fields: [orgUnitTable.workspaceId],
+      references: [workspaceTable.id],
+    }),
+    parent: one(orgUnitTable, {
+      fields: [orgUnitTable.parentId],
+      references: [orgUnitTable.id],
+      relationName: "orgUnitParent",
+    }),
+    children: many(orgUnitTable, { relationName: "orgUnitParent" }),
+    members: many(orgUnitMemberTable),
+  }),
+);
+
+export const orgUnitMemberTableRelations = relations(
+  orgUnitMemberTable,
+  ({ one }) => ({
+    orgUnit: one(orgUnitTable, {
+      fields: [orgUnitMemberTable.orgUnitId],
+      references: [orgUnitTable.id],
+    }),
+    user: one(userTable, {
+      fields: [orgUnitMemberTable.userId],
+      references: [userTable.id],
     }),
   }),
 );

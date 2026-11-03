@@ -64,6 +64,7 @@ import { getInstanceSettings } from "./instance-settings/get-instance-settings";
 import { readStoredSettings } from "./instance-settings/read-stored-settings";
 import { lockedSessionRevocation } from "./utils/locked-session-revocation";
 import { publishEvent } from "./events";
+import { seedDefaultTaskRoles } from "./task-role/default-roles";
 import { applyInvitationProjectAccess } from "./project-access/apply-invitation-project-access";
 import { resolveInvitationProjectAccess } from "./project-access/resolve-invitation-project-access";
 import { clearMemberProjectAccess } from "./project-access/clear-member-project-access";
@@ -607,6 +608,18 @@ export const auth = betterAuth({
           } catch (error) {
             console.error(
               "Failed to seed default workspace roles for workspace",
+              organization.id,
+              error,
+            );
+          }
+
+          // Better Auth runs this hook after its own writes, outside any
+          // transaction we can join, so the seed is one idempotent statement.
+          try {
+            await seedDefaultTaskRoles(db, organization.id);
+          } catch (error) {
+            console.error(
+              "Failed to seed default task roles for workspace",
               organization.id,
               error,
             );

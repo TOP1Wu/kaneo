@@ -1,7 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
 import { relations, sql } from "drizzle-orm";
 import {
+  type AnyPgColumn,
   boolean,
+  check,
   customType,
   foreignKey,
   index,
@@ -1659,3 +1661,160 @@ export const dataMigrationTable = pgTable("data_migration", {
     .default(utcNow)
     .notNull(),
 });
+
+// Collaborative task members. These tables extend `task` without touching it:
+// `task.assignee_id` stays the primary-owner mirror for existing integrations.
+export const taskRoleTable = pgTable(
+  "task_role",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    name: text("name").notNull(),
+    slug: text("slug").notNull(),
+    color: text("color"),
+    position: integer("position").notNull().default(0),
+    isOwnerRole: boolean("is_owner_role").notNull().default(false),
+    // Archived rather than deleted so historical activity stays readable.
+    archivedAt: timestamp("archived_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .default(utcNow)
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    unique("task_role_workspace_slug_unique").on(table.workspaceId, table.slug),
+  ],
+);
+
+export const taskMemberTable = pgTable(
+  "task_member",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    taskId: text("task_id")
+      .notNull()
+      .references(() => taskTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => userTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    // Restrict: roles are archived, never deleted, while members reference them.
+    roleId: text("role_id")
+      .notNull()
+      .references(() => taskRoleTable.id, {
+        onDelete: "restrict",
+        onUpdate: "cascade",
+      }),
+    progress: text("progress").notNull().default("todo"),
+    startedAt: timestamp("started_at", { mode: "date" }),
+    doneAt: timestamp("done_at", { mode: "date" }),
+    note: text("note"),
+    position: integer("position").notNull().default(0),
+    updatedBy: text("updated_by").references(() => userTable.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .default(utcNow)
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    unique("task_member_task_user_role_unique").on(
+      table.taskId,
+      table.userId,
+      table.roleId,
+    ),
+    index("task_member_userId_progress_idx").on(table.userId, table.progress),
+    index("task_member_taskId_idx").on(table.taskId),
+    index("task_member_roleId_idx").on(table.roleId),
+    check(
+      "task_member_progress_check",
+      sql`${table.progress} in ('todo', 'doing', 'done')`,
+    ),
+  ],
+);
+
+export const orgUnitTable = pgTable(
+  "org_unit",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    workspaceId: text("workspace_id")
+      .notNull()
+      .references(() => workspaceTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    // Null marks a root unit. Restrict so a subtree is never dropped by accident.
+    parentId: text("parent_id").references((): AnyPgColumn => orgUnitTable.id, {
+      onDelete: "restrict",
+      onUpdate: "cascade",
+    }),
+    name: text("name").notNull(),
+    position: integer("position").notNull().default(0),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .default(utcNow)
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("org_unit_workspaceId_idx").on(table.workspaceId),
+    index("org_unit_parentId_idx").on(table.parentId),
+  ],
+);
+
+export const orgUnitMemberTable = pgTable(
+  "org_unit_member",
+  {
+    id: text("id")
+      .$defaultFn(() => createId())
+      .primaryKey(),
+    orgUnitId: text("org_unit_id")
+      .notNull()
+      .references(() => orgUnitTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => userTable.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    isLeader: boolean("is_leader").notNull().default(false),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .default(utcNow)
+      .notNull(),
+  },
+  (table) => [
+    unique("org_unit_member_unit_user_unique").on(
+      table.orgUnitId,
+      table.userId,
+    ),
+    index("org_unit_member_userId_idx").on(table.userId),
+  ],
+);

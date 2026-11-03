@@ -13,6 +13,7 @@ import { revokeWorkspaceAudience } from "./revoke-workspace-audience";
 import type { AdminAuditRequest } from "../../admin/audit/admin-audit-request";
 import { recordAdminAction } from "../../admin/audit/record-admin-action";
 import { lockWorkspaceRow } from "./lock-workspace-row";
+import { clearWorkspaceTaskMembers } from "../../task-role/clear-workspace-task-members";
 
 /**
  * Deletes a workspace the way the owner's "Delete workspace" does: the same
@@ -54,6 +55,7 @@ export async function deleteWorkspaceData(
       .update(schema.sessionTable)
       .set({ activeOrganizationId: null, activeTeamId: null })
       .where(eq(schema.sessionTable.activeOrganizationId, workspaceId));
+    await clearWorkspaceTaskMembers(tx, [workspaceId]);
     await tx
       .delete(schema.workspaceTable)
       .where(eq(schema.workspaceTable.id, workspaceId));
