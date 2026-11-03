@@ -1,7 +1,7 @@
 import { responseTimestamp, z } from "../openapi";
 
 const activityTypeDescription =
-  "One of: comment, task, create, status_changed, priority_changed, assignee_changed, unassigned, due_date_changed, title_changed, description_changed.";
+  "One of: comment, task, create, status_changed, priority_changed, assignee_changed, unassigned, due_date_changed, title_changed, description_changed, member_added, member_removed, member_role_changed, member_progress_changed, task_ready_for_review. Member types carry eventData { memberUserId, memberUserName, roleId, roleName, from?, to?, onBehalfOf? }, where userId is whoever made the change.";
 
 export const activitySchema = z
   .object({

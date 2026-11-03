@@ -1090,7 +1090,7 @@
           },
           "total": {
             "type": "number",
-            "description": "All open tasks assigned to the caller, including any beyond the first 100 returned."
+            "description": "All open tasks assigned to the caller or with an unfinished membership of theirs, including any beyond the first 100 returned."
           }
         },
         "required": [
@@ -1161,6 +1161,30 @@
             "items": {
               "$ref": "#/components/schemas/TaskLabel"
             }
+          },
+          "myRoles": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "roleName": {
+                  "type": "string"
+                },
+                "progress": {
+                  "type": "string",
+                  "enum": [
+                    "todo",
+                    "doing",
+                    "done"
+                  ]
+                }
+              },
+              "required": [
+                "roleName",
+                "progress"
+              ]
+            },
+            "description": "The caller's own memberships on the task, in role order. Empty when they're only the assignee."
           }
         },
         "required": [
@@ -1176,7 +1200,8 @@
           "projectName",
           "projectSlug",
           "projectIcon",
-          "labels"
+          "labels",
+          "myRoles"
         ]
       },
       "BoardResponse": {
@@ -1694,7 +1719,7 @@
           },
           "type": {
             "type": "string",
-            "description": "One of: comment, task, create, status_changed, priority_changed, assignee_changed, unassigned, due_date_changed, title_changed, description_changed."
+            "description": "One of: comment, task, create, status_changed, priority_changed, assignee_changed, unassigned, due_date_changed, title_changed, description_changed, member_added, member_removed, member_role_changed, member_progress_changed, task_ready_for_review. Member types carry eventData { memberUserId, memberUserName, roleId, roleName, from?, to?, onBehalfOf? }, where userId is whoever made the change."
           },
           "createdAt": {
             "type": "string",
@@ -1787,7 +1812,7 @@
           },
           "type": {
             "type": "string",
-            "description": "One of: comment, task, create, status_changed, priority_changed, assignee_changed, unassigned, due_date_changed, title_changed, description_changed."
+            "description": "One of: comment, task, create, status_changed, priority_changed, assignee_changed, unassigned, due_date_changed, title_changed, description_changed, member_added, member_removed, member_role_changed, member_progress_changed, task_ready_for_review. Member types carry eventData { memberUserId, memberUserName, roleId, roleName, from?, to?, onBehalfOf? }, where userId is whoever made the change."
           },
           "createdAt": {
             "type": "string",
@@ -3740,6 +3765,9 @@
               "taskUnassigned": {
                 "type": "boolean"
               },
+              "taskMemberChanged": {
+                "type": "boolean"
+              },
               "dueDateReminder": {
                 "type": "boolean"
               }
@@ -3750,6 +3778,7 @@
               "taskDueDateChanged",
               "taskAssigneeChanged",
               "taskUnassigned",
+              "taskMemberChanged",
               "dueDateReminder"
             ]
           }
@@ -4794,6 +4823,260 @@
           "taskId",
           "fieldId",
           "value"
+        ]
+      },
+      "TaskRoleList": {
+        "type": "object",
+        "properties": {
+          "roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskRole"
+            }
+          }
+        },
+        "required": [
+          "roles"
+        ]
+      },
+      "TaskRole": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "workspaceId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          },
+          "color": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "position": {
+            "type": "number"
+          },
+          "isOwnerRole": {
+            "type": "boolean",
+            "description": "The primary-owner role. Its first member mirrors the task's assignee."
+          },
+          "archived": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "id",
+          "workspaceId",
+          "name",
+          "slug",
+          "color",
+          "position",
+          "isOwnerRole",
+          "archived"
+        ]
+      },
+      "TaskMemberSummaries": {
+        "type": "object",
+        "properties": {
+          "summaries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskMemberSummary"
+            }
+          }
+        },
+        "required": [
+          "summaries"
+        ]
+      },
+      "TaskMemberSummary": {
+        "type": "object",
+        "properties": {
+          "taskId": {
+            "type": "string"
+          },
+          "summary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskMemberRoleSummary"
+            }
+          },
+          "readyForReview": {
+            "type": "boolean",
+            "description": "True when the task has members and every one of them is done."
+          }
+        },
+        "required": [
+          "taskId",
+          "summary",
+          "readyForReview"
+        ]
+      },
+      "TaskMemberRoleSummary": {
+        "type": "object",
+        "properties": {
+          "roleId": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "roleSlug": {
+            "type": "string"
+          },
+          "total": {
+            "type": "number"
+          },
+          "done": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "roleId",
+          "roleName",
+          "roleSlug",
+          "total",
+          "done"
+        ]
+      },
+      "TaskMembers": {
+        "type": "object",
+        "properties": {
+          "members": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskMember"
+            }
+          },
+          "summary": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TaskMemberRoleSummary"
+            },
+            "description": "Per-role counts in role order, listing only roles with members."
+          },
+          "readyForReview": {
+            "type": "boolean",
+            "description": "True when the task has members and every one of them is done."
+          }
+        },
+        "required": [
+          "members",
+          "summary",
+          "readyForReview"
+        ]
+      },
+      "TaskMember": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string"
+          },
+          "userId": {
+            "type": "string"
+          },
+          "userName": {
+            "type": "string"
+          },
+          "userImage": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "roleId": {
+            "type": "string"
+          },
+          "roleName": {
+            "type": "string"
+          },
+          "roleSlug": {
+            "type": "string"
+          },
+          "isOwnerRole": {
+            "type": "boolean"
+          },
+          "progress": {
+            "type": "string",
+            "enum": [
+              "todo",
+              "doing",
+              "done"
+            ],
+            "description": "A member's own progress on the task."
+          },
+          "startedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "doneAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "note": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "position": {
+            "type": "number"
+          },
+          "updatedBy": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "Who last changed the row; differs from userId for edits made on the member's behalf."
+          }
+        },
+        "required": [
+          "id",
+          "taskId",
+          "userId",
+          "userName",
+          "userImage",
+          "roleId",
+          "roleName",
+          "roleSlug",
+          "isOwnerRole",
+          "progress",
+          "startedAt",
+          "doneAt",
+          "note",
+          "position",
+          "updatedBy"
+        ]
+      },
+      "DeletedTaskMember": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "taskId": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "taskId"
         ]
       },
       "ImportSourceProjectList": {
@@ -12474,7 +12757,7 @@
           "Tasks"
         ],
         "summary": "List my assigned tasks",
-        "description": "Get the open tasks assigned to the caller across a workspace's active projects. Completed and archived tasks are excluded. Ordered by due date (undated last), then priority. At most 100 tasks are returned; total counts all of them. Set countOnly=true to return just that total without loading task rows or labels.",
+        "description": "Get the open tasks assigned to the caller, or where the caller is a task member with unfinished progress, across a workspace's active projects. Completed and archived tasks are excluded, as are tasks where the caller isn't the assignee and has marked all their memberships done. Each task lists the caller's roles in myRoles. Ordered by due date (undated last), then priority. At most 100 tasks are returned; total counts all of them. Set countOnly=true to return just that total without loading task rows or labels.",
         "parameters": [
           {
             "schema": {
@@ -21303,6 +21586,9 @@
                       "taskUnassigned": {
                         "type": "boolean"
                       },
+                      "taskMemberChanged": {
+                        "type": "boolean"
+                      },
                       "dueDateReminder": {
                         "type": "boolean"
                       }
@@ -21449,6 +21735,9 @@
                         "type": "boolean"
                       },
                       "taskUnassigned": {
+                        "type": "boolean"
+                      },
+                      "taskMemberChanged": {
                         "type": "boolean"
                       },
                       "dueDateReminder": {
@@ -25231,6 +25520,713 @@
           },
           "404": {
             "description": "Custom field not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/task-role/{workspaceId}": {
+      "get": {
+        "operationId": "listTaskRoles",
+        "tags": [
+          "Task Roles"
+        ],
+        "summary": "List task roles",
+        "description": "List the workspace's task member roles, archived ones included, ordered by position.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The workspace's task roles",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRoleList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createTaskRole",
+        "tags": [
+          "Task Roles"
+        ],
+        "summary": "Create task role",
+        "description": "Add a task member role to the workspace, appended after the existing roles.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "workspaceId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "color": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+                    "example": "#3B82F6"
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The created task role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRole"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Workspace not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/task-role/{id}": {
+      "put": {
+        "operationId": "updateTaskRole",
+        "tags": [
+          "Task Roles"
+        ],
+        "summary": "Update task role",
+        "description": "Rename, recolor, reorder, archive, or restore a task role. Archived roles keep their members and history; the workspace's only owner role can't be archived.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 64
+                  },
+                  "color": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "pattern": "^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
+                    "example": "#3B82F6"
+                  },
+                  "position": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  },
+                  "archived": {
+                    "type": "boolean",
+                    "description": "Archive (true) or restore (false) the role. The workspace's only owner role can't be archived."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The updated task role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskRole"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, or archiving the only owner role",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Missing workspace:manage_settings permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task role not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/task-member/summary": {
+      "get": {
+        "operationId": "getTaskMemberSummaries",
+        "tags": [
+          "Task Members"
+        ],
+        "summary": "Get member summaries for tasks",
+        "description": "Per-role member counts and review readiness for up to 200 tasks in one workspace, for boards and lists.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "description": "Comma-separated task IDs, at most 200.",
+              "example": "task-a,task-b"
+            },
+            "required": true,
+            "description": "Comma-separated task IDs, at most 200.",
+            "name": "taskIds",
+            "in": "query"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Member summaries in request order",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskMemberSummaries"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing taskIds, more than 200, or tasks from several workspaces",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access to a task's project, or missing task:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No tasks found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/task-member/task/{taskId}": {
+      "get": {
+        "operationId": "getTaskMembers",
+        "tags": [
+          "Task Members"
+        ],
+        "summary": "List task members",
+        "description": "List a task's members grouped by role order, with per-role counts and whether every member is done.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "taskId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The task's members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskMembers"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "No access to the project, or missing task:read permission",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "post": {
+        "operationId": "addTaskMembers",
+        "tags": [
+          "Task Members"
+        ],
+        "summary": "Add task members",
+        "description": "Add users to a task under one role. Users who already hold that role are skipped. Allowed for the task's primary owners, workspace admins, and anyone with task:update. Adding to the primary-owner role can change the task's assignee.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "taskId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "roleId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "userIds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "minItems": 1,
+                    "maxItems": 100,
+                    "description": "Users to add under the role. Existing memberships are skipped."
+                  }
+                },
+                "required": [
+                  "roleId",
+                  "userIds"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The task's members after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskMembers"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, or the role is archived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not allowed to manage members, or a user can't access the task's project",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task or role not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      }
+    },
+    "/task-member/{memberId}": {
+      "delete": {
+        "operationId": "removeTaskMember",
+        "tags": [
+          "Task Members"
+        ],
+        "summary": "Remove task member",
+        "description": "Remove one membership. Removing the first primary owner hands the assignee to the next one.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "memberId",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The removed membership",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedTaskMember"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not allowed to manage this task's members",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task member not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "429": {
+            "$ref": "#/components/responses/ApiKeyRateLimited"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updateTaskMember",
+        "tags": [
+          "Task Members"
+        ],
+        "summary": "Update task member",
+        "description": "Change a member's progress, note, role, or order. Members update their own progress and note; primary owners and workspace admins can do it on their behalf, which the activity log records. Changing role or order needs member management rights.",
+        "parameters": [
+          {
+            "schema": {
+              "type": "string"
+            },
+            "required": true,
+            "name": "memberId",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "roleId": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "progress": {
+                    "type": "string",
+                    "enum": [
+                      "todo",
+                      "doing",
+                      "done"
+                    ],
+                    "description": "A member's own progress on the task."
+                  },
+                  "note": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "maxLength": 2000
+                  },
+                  "position": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10000
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The task's members after the change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskMembers"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid body, or the role is archived",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Not allowed to make this change",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task member or role not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiError"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The user already holds that role on this task",
             "content": {
               "application/json": {
                 "schema": {

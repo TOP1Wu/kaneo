@@ -104,6 +104,21 @@ export type TaskUnassignedEvent = {
   title: string;
 };
 
+export type TaskMemberChangedEvent = {
+  taskId: string;
+  projectId: string;
+  workspaceId: string;
+  userId: string | null;
+  action: "added" | "removed" | "updated";
+  member: {
+    id: string;
+    userId: string;
+    roleId: string;
+    roleName: string;
+    progress: string;
+  };
+};
+
 export type TaskEvent =
   | TaskCreatedEvent
   | TaskStatusChangedEvent
@@ -115,7 +130,8 @@ export type TaskEvent =
   | TaskMovedEvent
   | TaskDueDateChangedEvent
   | TaskAssigneeChangedEvent
-  | TaskUnassignedEvent;
+  | TaskUnassignedEvent
+  | TaskMemberChangedEvent;
 
 export type ExternalMetadata = {
   type: "issue" | "pull_request" | "branch";
@@ -161,6 +177,7 @@ export type IntegrationPlugin = {
   onTaskDueDateChanged?: TaskEventHandler<TaskDueDateChangedEvent>;
   onTaskAssigneeChanged?: TaskEventHandler<TaskAssigneeChangedEvent>;
   onTaskUnassigned?: TaskEventHandler<TaskUnassignedEvent>;
+  onTaskMemberChanged?: TaskEventHandler<TaskMemberChangedEvent>;
 
   handleWebhook?: WebhookHandler;
   getTaskMetadata?: MetadataProvider;

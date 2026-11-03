@@ -1,4 +1,6 @@
 import { and, eq, getTableColumns, sql } from "drizzle-orm";
+import { publishEnsuredMember } from "../../task-member/publish-ensured-member";
+import { ensureAssigneeIsPrimaryMember } from "../../task-member/sync-primary-assignee";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import { columnTable, projectTable, taskTable } from "../../database/schema";
@@ -80,6 +82,7 @@ async function updateTask(
 
   const initialPosition = existingTask.position;
   const initialStatus = existingTask.status;
+  let ensured: Awaited<ReturnType<typeof ensureAssigneeIsPrimaryMember>> = null;
   const updatedTask = await db.transaction(async (tx) => {
     const [project] = await tx
       .select({ id: projectTable.id })
@@ -135,13 +138,21 @@ async function updateTask(
         description: boardDescription,
         descriptionDeferred,
       });
-    if (task)
+    if (task) {
       await recordTaskMutation(
         tx,
         existingTask,
         { title, dueDate: dueDate ?? null },
         currentUserId,
       );
+      if (task.userId !== existingTask.userId)
+        ensured = await ensureAssigneeIsPrimaryMember(
+          tx,
+          task.id,
+          task.userId,
+          currentUserId,
+        );
+    }
     return task;
   });
 
@@ -160,6 +171,8 @@ async function updateTask(
     { ...updatedTask, description: description ?? updatedTask.description },
     currentUserId,
   );
+
+  await publishEnsuredMember(ensured, currentUserId);
 
   await publishEvent("task.updated", {
     taskId: updatedTask.id,

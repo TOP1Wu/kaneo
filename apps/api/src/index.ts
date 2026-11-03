@@ -34,6 +34,9 @@ import comment from "./comment";
 import config from "./config";
 import customField from "./custom-field";
 import dashboard from "./dashboard";
+import taskMember from "./task-member";
+import { registerExtraEditGuard } from "./task-member/can-edit-member";
+import taskRole from "./task-role";
 import db, { getDatabase, schema } from "./database";
 import { apiErrorSchema } from "./errors/api-error-schema";
 import { httpExceptionResponse } from "./errors/http-exception-response";
@@ -62,6 +65,7 @@ import getInstanceStatus from "./instance/controllers/get-instance-status";
 import invitation from "./invitation";
 import label from "./label";
 import leaderBoard from "./leader-board";
+import { leaderEditGuard } from "./leader-board/leader-edit-guard";
 import mattermostIntegration from "./mattermost-integration";
 import mcpRoutes, { mcpWellKnownRoutes } from "./mcp";
 import { migrateColumns } from "./migrations/column-migration";
@@ -875,6 +879,8 @@ export function createApp() {
   const invitationApi = api.route("/invitation", invitation);
   const workspaceApi = api.route("/workspace", workspace);
   const customFieldApi = api.route("/custom-field", customField);
+  const taskRoleApi = api.route("/task-role", taskRole);
+  const taskMemberApi = api.route("/task-member", taskMember);
   const importApi = api.route("/import", importRoutes);
   const userApi = api.route("/user", user);
   const adminApi = api.route("/admin", admin);
@@ -1023,6 +1029,8 @@ export function createApp() {
     orgUnitApi,
     leaderBoardApi,
     dashboardApi,
+    taskRoleApi,
+    taskMemberApi,
     importApi,
     oauthApi,
   };
@@ -1122,6 +1130,10 @@ export async function startServer(
   });
 }
 
+// Module scope, not runStartupTasks: tests build the app via createApp() without
+// startup tasks, and the guard must stay registered once (tests may swap it).
+registerExtraEditGuard(leaderEditGuard);
+
 const createdApp = createApp();
 const {
   app,
@@ -1161,6 +1173,8 @@ const {
   orgUnitApi,
   leaderBoardApi,
   dashboardApi,
+  taskRoleApi,
+  taskMemberApi,
   importApi,
   oauthApi,
 } = createdApp;
@@ -1207,6 +1221,8 @@ export type AppType =
   | typeof orgUnitApi
   | typeof leaderBoardApi
   | typeof dashboardApi
+  | typeof taskRoleApi
+  | typeof taskMemberApi
   | typeof importApi
   | typeof userApi
   | typeof adminApi

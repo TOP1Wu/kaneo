@@ -1,4 +1,6 @@
 import { and, asc, eq } from "drizzle-orm";
+import { publishEnsuredMember } from "../../task-member/publish-ensured-member";
+import { ensureAssigneeIsPrimaryMember } from "../../task-member/sync-primary-assignee";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
 import { columnTable, projectTable, taskTable } from "../../database/schema";
@@ -88,6 +90,8 @@ async function importTasks(
       );
       const warnings = [statusWarning, priorityWarning].filter(Boolean);
 
+      let ensured: Awaited<ReturnType<typeof ensureAssigneeIsPrimaryMember>> =
+        null;
       const createdTask = await db.transaction(async (tx) => {
         const taskNumber = await claimTaskNumber(projectId, tx);
         // Recheck the snapshot's column and retain it until the insert commits.
@@ -136,6 +140,14 @@ async function importTasks(
           })
           .returning();
 
+        if (task?.userId)
+          ensured = await ensureAssigneeIsPrimaryMember(
+            tx,
+            task.id,
+            task.userId,
+            currentUserId ?? null,
+          );
+
         return task;
       });
 
@@ -148,6 +160,7 @@ async function importTasks(
           type: "create",
           content: "imported the task",
         });
+        await publishEnsuredMember(ensured, currentUserId);
 
         results.push({
           success: true,

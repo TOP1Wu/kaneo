@@ -1043,4 +1043,53 @@ describe("leaderEditGuard", () => {
       }),
     ).toBe(false);
   });
+
+  it("is wired into PATCH /task-member so leaders edit reports on their behalf", async () => {
+    const org = await seedBoard();
+    const app = createApp().app;
+    const taskId = org.tasks.overdueTask.id;
+    const [staffRow] = await db
+      .select()
+      .from(schema.taskMemberTable)
+      .where(eq(schema.taskMemberTable.taskId, taskId))
+      .then((rows) => rows.filter((row) => row.userId === org.staff.id));
+
+    // Pat shares the workspace but leads nobody, so editing Sam is denied.
+    const denied = await call(app, org.peer, `/task-member/${staffRow.id}`, {
+      method: "PATCH",
+      body: { progress: "doing" },
+    });
+    expect(denied.status).toBe(403);
+
+    // Lena leads Eng > Backend, so she may move Sam's progress for him.
+    const updated = await json<{
+      members: { userId: string; progress: Progress; updatedBy: string }[];
+    }>(
+      await call(app, org.leader, `/task-member/${staffRow.id}`, {
+        method: "PATCH",
+        body: { progress: "doing" },
+      }),
+    );
+    expect(
+      updated.members.find((member) => member.userId === org.staff.id),
+    ).toMatchObject({ progress: "doing", updatedBy: org.leader.id });
+
+    const activities = await db
+      .select()
+      .from(schema.activityTable)
+      .where(eq(schema.activityTable.taskId, taskId));
+    expect(
+      activities.filter((a) => a.type === "member_progress_changed"),
+    ).toEqual([
+      expect.objectContaining({
+        userId: org.leader.id,
+        eventData: expect.objectContaining({
+          memberUserId: org.staff.id,
+          from: "todo",
+          to: "doing",
+          onBehalfOf: true,
+        }),
+      }),
+    ]);
+  });
 });

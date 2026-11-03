@@ -7,6 +7,7 @@ import {
   inArray,
   isNull,
   ne,
+  or,
   sql,
 } from "drizzle-orm";
 import db from "../../database";
@@ -14,9 +15,12 @@ import {
   columnTable,
   labelTable,
   projectTable,
+  taskMemberTable,
+  taskRoleTable,
   taskTable,
 } from "../../database/schema";
 import { projectAccessCondition } from "../../project-access/project-access-condition";
+import type { MemberProgress } from "../../task-member/progress-timestamps";
 import { taskIsCompleted } from "../task-is-completed";
 
 // Home and My tasks render this list whole, so it stays one bounded page.
@@ -35,10 +39,17 @@ async function getAssignedTasks(
   userId: string,
   countOnly = false,
 ) {
+  // Members who aren't the assignee drop off once all their own rows are done.
+  const hasOpenMembership = sql`exists (
+    select 1 from ${taskMemberTable}
+    where ${taskMemberTable.taskId} = ${taskTable.id}
+      and ${taskMemberTable.userId} = ${userId}
+      and ${taskMemberTable.progress} <> 'done'
+  )`;
   const openAndMine = and(
     eq(projectTable.workspaceId, workspaceId),
     isNull(projectTable.archivedAt),
-    eq(taskTable.userId, userId),
+    or(eq(taskTable.userId, userId), hasOpenMembership),
     ne(taskTable.status, "archived"),
     sql`not coalesce((
       select ${columnTable.isFinal} from ${columnTable}
@@ -127,6 +138,36 @@ async function getAssignedTasks(
         .orderBy(asc(labelTable.name), asc(labelTable.id))
     : [];
 
+  const roles = tasks.length
+    ? await db
+        .select({
+          taskId: taskMemberTable.taskId,
+          roleName: taskRoleTable.name,
+          progress: taskMemberTable.progress,
+        })
+        .from(taskMemberTable)
+        .innerJoin(taskRoleTable, eq(taskMemberTable.roleId, taskRoleTable.id))
+        .where(
+          and(
+            eq(taskMemberTable.userId, userId),
+            inArray(
+              taskMemberTable.taskId,
+              tasks.map((task) => task.id),
+            ),
+          ),
+        )
+        .orderBy(asc(taskRoleTable.position), asc(taskMemberTable.position))
+    : [];
+  const rolesByTask = new Map<
+    string,
+    Array<{ roleName: string; progress: MemberProgress }>
+  >();
+  for (const { taskId, roleName, progress } of roles) {
+    const taskRoles = rolesByTask.get(taskId) ?? [];
+    taskRoles.push({ roleName, progress: progress as MemberProgress });
+    rolesByTask.set(taskId, taskRoles);
+  }
+
   const labelsByTask = new Map<
     string,
     Array<{ id: string; name: string; color: string }>
@@ -142,6 +183,7 @@ async function getAssignedTasks(
     tasks: tasks.map((task) => ({
       ...task,
       labels: labelsByTask.get(task.id) ?? [],
+      myRoles: rolesByTask.get(task.id) ?? [],
     })),
     total: Number(totals?.total ?? 0),
   };
