@@ -1,4 +1,9 @@
 import { createId } from "@paralleldrive/cuid2";
+import { publishEnsuredMember } from "../../task-member/publish-ensured-member";
+import {
+  type EnsuredMember,
+  ensureAssigneeIsPrimaryMember,
+} from "../../task-member/sync-primary-assignee";
 import { and, eq, isNotNull } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
@@ -316,6 +321,7 @@ async function duplicateTask({
   let duplicated: {
     task: typeof taskTable.$inferSelect;
     relations: (typeof taskRelationTable.$inferSelect)[];
+    ensured: EnsuredMember | null;
   };
 
   try {
@@ -435,7 +441,16 @@ async function duplicateTask({
               .returning()
           : [];
 
-      return { task, relations };
+      // Copies only the assignee's primary-owner membership, not the full team.
+      const ensured = task.userId
+        ? await ensureAssigneeIsPrimaryMember(
+            tx,
+            task.id,
+            task.userId,
+            currentUserId || null,
+          )
+        : null;
+      return { task, relations, ensured };
     });
   } catch (error) {
     await discardCopiedObjects(assets.map((asset) => asset.objectKey));
@@ -444,6 +459,7 @@ async function duplicateTask({
   }
 
   const duplicatedTask = duplicated.task;
+  await publishEnsuredMember(duplicated.ensured, currentUserId);
 
   const [assignee] = duplicatedTask.userId
     ? await db

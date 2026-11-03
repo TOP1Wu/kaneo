@@ -121,7 +121,7 @@ const listAssignedTasksRoute = createRoute({
   tags: ["Tasks"],
   summary: "List my assigned tasks",
   description:
-    "Get the open tasks assigned to the caller across a workspace's active projects. Completed and archived tasks are excluded. Ordered by due date (undated last), then priority. At most 100 tasks are returned; total counts all of them. Set countOnly=true to return just that total without loading task rows or labels.",
+    "Get the open tasks assigned to the caller, or where the caller is a task member with unfinished progress, across a workspace's active projects. Completed and archived tasks are excluded, as are tasks where the caller isn't the assignee and has marked all their memberships done. Each task lists the caller's roles in myRoles. Ordered by due date (undated last), then priority. At most 100 tasks are returned; total counts all of them. Set countOnly=true to return just that total without loading task rows or labels.",
   middleware: [
     workspaceAccess.fromQuery(),
     requireWorkspacePermission({ project: ["read"], task: ["read"] }),

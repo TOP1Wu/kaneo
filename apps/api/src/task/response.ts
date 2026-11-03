@@ -309,12 +309,23 @@ export const assignedTasksSchema = z
           projectSlug: z.string(),
           projectIcon: z.string().nullable(),
           labels: z.array(taskLabelSchema),
+          myRoles: z
+            .array(
+              z.object({
+                roleName: z.string(),
+                progress: z.enum(["todo", "doing", "done"]),
+              }),
+            )
+            .openapi({
+              description:
+                "The caller's own memberships on the task, in role order. Empty when they're only the assignee.",
+            }),
         })
         .openapi("AssignedTask"),
     ),
     total: z.number().openapi({
       description:
-        "All open tasks assigned to the caller, including any beyond the first 100 returned.",
+        "All open tasks assigned to the caller or with an unfinished membership of theirs, including any beyond the first 100 returned.",
     }),
   })
   .openapi("AssignedTasks");

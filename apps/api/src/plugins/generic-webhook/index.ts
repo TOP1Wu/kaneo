@@ -7,6 +7,7 @@ import {
   handleTaskDeleted,
   handleTaskDescriptionChanged,
   handleTaskDueDateChanged,
+  handleTaskMemberChanged,
   handleTaskMoved,
   handleTaskPriorityChanged,
   handleTaskStatusChanged,
@@ -28,5 +29,6 @@ export const genericWebhookPlugin: IntegrationPlugin = {
   onTaskDueDateChanged: handleTaskDueDateChanged,
   onTaskAssigneeChanged: handleTaskAssigneeChanged,
   onTaskUnassigned: handleTaskUnassigned,
+  onTaskMemberChanged: handleTaskMemberChanged,
   validateConfig: validateGenericWebhookConfig,
 };

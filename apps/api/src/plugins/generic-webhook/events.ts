@@ -17,6 +17,7 @@ import type {
   TaskDeletedEvent,
   TaskDescriptionChangedEvent,
   TaskDueDateChangedEvent,
+  TaskMemberChangedEvent,
   TaskMovedEvent,
   TaskPriorityChangedEvent,
   TaskStatusChangedEvent,
@@ -544,5 +545,24 @@ export async function handleTaskUnassigned(
     {
       title: event.title,
     },
+  );
+}
+
+export async function handleTaskMemberChanged(
+  event: TaskMemberChangedEvent,
+  context: PluginContext,
+): Promise<void> {
+  const config = normalizeGenericWebhookConfig(
+    context.config as GenericWebhookConfig,
+  );
+  if (!isEnabled(config, "taskMemberChanged")) return;
+
+  await sendEvent(
+    config,
+    "task.member_changed",
+    event.taskId,
+    event.projectId,
+    event.userId,
+    { action: event.action, member: event.member },
   );
 }

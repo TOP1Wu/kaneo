@@ -1,4 +1,6 @@
 import { queueStorageCleanup } from "../../storage/cleanup-queue";
+import { publishEnsuredMember } from "../../task-member/publish-ensured-member";
+import { ensureAssigneeIsPrimaryMember } from "../../task-member/sync-primary-assignee";
 import { and, asc, eq, inArray } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
@@ -287,10 +289,21 @@ async function bulkUpdateTasks({
           .update(taskTable)
           .set({ userId: assigneeId })
           .where(inArray(taskTable.id, foundIds));
-        return locked;
+        const ensured = [];
+        for (const task of locked)
+          if (task.userId !== assigneeId)
+            ensured.push(
+              await ensureAssigneeIsPrimaryMember(
+                tx,
+                task.id,
+                assigneeId,
+                userId,
+              ),
+            );
+        return { locked, ensured };
       });
-      updatedCount = before.length;
-      for (const task of before)
+      updatedCount = before.locked.length;
+      for (const task of before.locked)
         await publishTaskMutation(
           task,
           {
@@ -300,6 +313,8 @@ async function bulkUpdateTasks({
           userId,
           { fields: ["userId"], assigneeName: assignee?.name ?? null },
         );
+      for (const ensured of before.ensured)
+        await publishEnsuredMember(ensured, userId);
       break;
     }
 
