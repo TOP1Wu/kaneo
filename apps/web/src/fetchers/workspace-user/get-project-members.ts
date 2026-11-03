@@ -3,7 +3,8 @@ import { HttpError } from "@/lib/http-error";
 
 export type GetProjectMembersRequest = {
   workspaceId: string;
-  projectId: string;
+  /** Omit for every workspace member. */
+  projectId?: string;
 };
 
 async function getProjectMembers({
@@ -12,7 +13,7 @@ async function getProjectMembers({
 }: GetProjectMembersRequest) {
   const response = await client.workspace[":workspaceId"].members.$get({
     param: { workspaceId },
-    query: { projectId },
+    query: projectId ? { projectId } : {},
   });
 
   if (!response.ok) {

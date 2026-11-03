@@ -16,6 +16,7 @@ import getExternalLinks from "@/fetchers/external-link/get-external-links";
 import type { ResumePreview } from "@/fetchers/integration-sync/types";
 import { patchBoardTask } from "@/lib/patch-board-task";
 import { isPerTaskRelationQuery } from "@/lib/relation-query-keys";
+import { invalidateTaskMemberQueries } from "@/lib/task-member/invalidate-task-member-queries";
 import type { ProjectWithTasks } from "@/types/project";
 import {
   hasSyncTaskSample,
@@ -195,6 +196,14 @@ export function useProjectWebSocket(projectId: string) {
         if (disposed || activeSocket !== ws) return;
         try {
           const message = JSON.parse(event.data);
+          // Member rows live outside the board payload; refetch what reads them.
+          if (message.type === "TASK_MEMBERS_UPDATED") {
+            invalidateTaskMemberQueries(queryClient, {
+              taskId: message.taskId,
+              projectId,
+            });
+            return;
+          }
           if (message.type === "PROJECT_MEMBERS_UPDATED") {
             void queryClient.invalidateQueries({
               predicate: (query) =>

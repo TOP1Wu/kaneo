@@ -1,14 +1,19 @@
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { AssignedTaskRow } from "@/components/my-work/assigned-task-row";
 import type { DueBucket } from "@/components/my-work/due-bucket";
 import {
+  type AssignedTaskGroup,
   groupAssignedTasksByDueDate,
   groupAssignedTasksByProject,
 } from "@/components/my-work/group-assigned-tasks";
 import type { AssignedTask } from "@/fetchers/task/get-assigned-tasks";
 import { useLocalDay } from "@/hooks/use-local-day";
 import { cn } from "@/lib/cn";
+import {
+  groupAssignedTasksByMyProgress,
+  type MyProgressBucket,
+} from "./group-by-my-progress";
+import { MyTaskRow } from "./my-task-row";
 import type { MyTasksGroupBy } from "./my-tasks-group-by";
 
 type MyTasksListProps = {
@@ -28,9 +33,11 @@ export function MyTasksList({
   const day = useLocalDay();
   const groups = useMemo(
     () =>
-      groupBy === "project"
-        ? groupAssignedTasksByProject(tasks)
-        : groupAssignedTasksByDueDate(tasks, new Date(day)),
+      groupBy === "myProgress"
+        ? groupAssignedTasksByMyProgress(tasks)
+        : groupBy === "project"
+          ? groupAssignedTasksByProject(tasks)
+          : groupAssignedTasksByDueDate(tasks, new Date(day)),
     [tasks, groupBy, day],
   );
 
@@ -40,6 +47,18 @@ export function MyTasksList({
     thisWeek: t("workspace:myWork.due.thisWeek"),
     later: t("workspace:myWork.due.later"),
     noDueDate: t("workspace:myWork.due.noDueDate"),
+  };
+  const progressTitles: Record<MyProgressBucket, string> = {
+    todo: t("tasks:members.progress.todo"),
+    doing: t("tasks:members.progress.doing"),
+    done: t("tasks:members.progress.done"),
+    assigneeOnly: t("workspace:myTasks.assigneeOnly"),
+  };
+  const groupTitle = (
+    group: AssignedTaskGroup & { progress?: MyProgressBucket },
+  ) => {
+    if (group.progress) return progressTitles[group.progress];
+    return group.bucket ? bucketTitles[group.bucket] : group.title;
   };
 
   return (
@@ -55,7 +74,7 @@ export function MyTasksList({
                   : "text-foreground",
               )}
             >
-              {group.bucket ? bucketTitles[group.bucket] : group.title}
+              {groupTitle(group)}
             </span>
             <span className="font-normal text-muted-foreground text-xs tabular-nums">
               {group.tasks.length}
@@ -63,12 +82,7 @@ export function MyTasksList({
           </h2>
           <div className="flex flex-col px-4">
             {group.tasks.map((task) => (
-              <AssignedTaskRow
-                key={task.id}
-                task={task}
-                workspaceId={workspaceId}
-                showLabels
-              />
+              <MyTaskRow key={task.id} task={task} workspaceId={workspaceId} />
             ))}
           </div>
         </section>

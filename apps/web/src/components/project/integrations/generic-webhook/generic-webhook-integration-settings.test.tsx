@@ -100,7 +100,7 @@ describe("GenericWebhookIntegrationSettings", () => {
     mocks.deleteIntegration.mockReset().mockResolvedValue(undefined);
   });
 
-  it("lists all twelve events and shows reminder timing only when reminders are on", () => {
+  it("lists all thirteen events and shows reminder timing only when reminders are on", () => {
     render(<GenericWebhookIntegrationSettings projectId="project-1" />);
 
     expect(
@@ -109,7 +109,7 @@ describe("GenericWebhookIntegrationSettings", () => {
           name: "settings:genericWebhookIntegration.eventsTitle",
         }),
       ).getAllByRole("checkbox"),
-    ).toHaveLength(12);
+    ).toHaveLength(13);
     expect(
       screen.queryByLabelText(
         "settings:genericWebhookIntegration.reminderLeadTimeLabel",
@@ -146,6 +146,7 @@ describe("GenericWebhookIntegrationSettings", () => {
             taskDueDateChanged: false,
             taskAssigneeChanged: false,
             taskUnassigned: false,
+            taskMemberChanged: false,
           }),
         }),
       }),
@@ -162,6 +163,7 @@ describe("GenericWebhookIntegrationSettings", () => {
       "taskDueDateChanged",
       "taskAssigneeChanged",
       "taskUnassigned",
+      "taskMemberChanged",
     ]) {
       fireEvent.click(eventCheckbox(event));
     }
@@ -181,6 +183,7 @@ describe("GenericWebhookIntegrationSettings", () => {
             taskDueDateChanged: true,
             taskAssigneeChanged: true,
             taskUnassigned: true,
+            taskMemberChanged: true,
           }),
         }),
       }),

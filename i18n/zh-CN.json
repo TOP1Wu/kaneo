@@ -1407,7 +1407,8 @@
 				"taskDueDateChanged": "截止日期已变更",
 				"taskAssigneeChanged": "负责人已变更",
 				"taskUnassigned": "任务已取消指派",
-				"dueDateReminder": "截止日期提醒"
+				"dueDateReminder": "截止日期提醒",
+				"taskMemberChanged": "任务成员变更"
 			},
 			"reminderLeadTimeLabel": "任务截止前的小时数",
 			"connect": "连接 Webhook",
@@ -2791,6 +2792,36 @@
 			"title": "Webhooks",
 			"url": "URL",
 			"save": "Save"
+		},
+		"org": {
+			"title": "组织架构",
+			"subtitle": "维护部门、成员和领导。领导能看到下属的任务。",
+			"adminOnly": "只有工作区所有者和管理员可以维护组织架构。",
+			"loadError": "组织架构加载失败",
+			"saveError": "保存失败",
+			"emptyTitle": "还没有部门",
+			"emptyDescription": "先建部门，再添加成员和领导。",
+			"treeLabel": "部门树",
+			"newUnit": "新建部门",
+			"editUnit": "编辑部门",
+			"editUnitNamed": "编辑 {{name}}",
+			"deleteUnitNamed": "删除 {{name}}",
+			"deleteTitle": "删除「{{name}}」？",
+			"deleteDescription": "部门成员名单会一并删除。请先移走或删除它的子部门。",
+			"unitName": "名称",
+			"parent": "上级部门",
+			"noParent": "无（顶级）",
+			"save": "保存",
+			"selectUnit": "选择左侧部门查看成员。",
+			"membersOf": "{{name}} 的成员",
+			"addMember": "添加成员",
+			"noMembers": "还没有成员。",
+			"member": "成员",
+			"leader": "领导",
+			"leaderFor": "{{name}} 是本部门领导",
+			"removeMember": "移除 {{name}}",
+			"deleteHasChildren": "请先移走或删除它的子部门。",
+			"moveIntoSelf": "部门不能移到自己或自己的子部门下。"
 		}
 	},
 	"navigation": {
@@ -2824,7 +2855,9 @@
 			"home": "首页",
 			"inbox": "收件箱",
 			"invitePeople": "邀请成员",
-			"myTasks": "我的任务"
+			"myTasks": "我的任务",
+			"leaderBoard": "负责人看板",
+			"dashboard": "仪表盘"
 		},
 		"projectList": {
 			"viewProject": "查看项目",
@@ -3179,7 +3212,20 @@
 			"importedBy": "由 {{name}} 导入",
 			"commentedOnForge": "在 {{forge}} 上评论"
 		},
-		"movedFromOtherProject": "将任务从其它项目移动到「{{to}}」"
+		"movedFromOtherProject": "将任务从其它项目移动到「{{to}}」",
+		"member": {
+			"added": "添加了 {{name}}（{{role}}）",
+			"removed": "移除了 {{name}}（{{role}}）",
+			"roleChanged": "把 {{name}} 的角色从 {{from}} 改为 {{to}}",
+			"progressSelf": "将{{role}}进度{{progress}}",
+			"progressOnBehalf": "代 {{name}}（{{role}}）{{progress}}",
+			"readyForReview": "完成了最后一个环节，任务可验收",
+			"progress": {
+				"todo": "标记未开始",
+				"doing": "标记进行中",
+				"done": "标记完成"
+			}
+		}
 	},
 	"tasks": {
 		"title": "任务",
@@ -3753,6 +3799,39 @@
 			"startsOn": "开始于 {{date}}",
 			"beforeStart": "{{date}} 早于开始日期",
 			"afterDue": "{{date}} 晚于截止日期"
+		},
+		"members": {
+			"title": "成员",
+			"add": "添加成员",
+			"addTitle": "添加成员",
+			"addDescription": "先选角色，再勾选承担该角色的人。",
+			"addCount_other": "添加 {{count}} 人",
+			"addError": "添加成员失败",
+			"removeError": "移除成员失败",
+			"updateError": "更新成员失败",
+			"loadError": "成员加载失败",
+			"empty": "还没有成员。",
+			"role": "角色",
+			"rolePlaceholder": "选择角色",
+			"searchPeople": "搜索成员",
+			"noCandidates": "没有可以加入该角色的人。",
+			"changeRole": "改角色",
+			"remove": "从任务中移除",
+			"actionsFor": "{{name}} 的操作",
+			"you": "（我）",
+			"doneAt": "完成时间",
+			"progressFor": "{{name}}（{{role}}）的进度",
+			"progressLabel": "按角色的成员进度",
+			"noPermission": "只有本人、主要负责人、上级或管理员可以修改。",
+			"readyForReview": "可验收",
+			"onBehalfTitle": "代他人修改进度？",
+			"onBehalfDescription": "将把 {{name}}（{{role}}）的进度改为「{{progress}}」，并以代改记录。",
+			"onBehalfConfirm": "确认代改",
+			"progress": {
+				"todo": "未开始",
+				"doing": "进行中",
+				"done": "已完成"
+			}
 		}
 	},
 	"invitations": {
@@ -3888,10 +3967,13 @@
 			"groupBy": {
 				"dueDate": "截止日期",
 				"label": "分组方式",
-				"project": "项目"
+				"project": "项目",
+				"myProgress": "我的进度"
 			},
 			"pageTitle": "我的任务",
-			"truncated": "共 {{total}} 个任务，只显示前 {{shown}} 个。"
+			"truncated": "共 {{total}} 个任务，只显示前 {{shown}} 个。",
+			"assigneeOnly": "仅指派给我",
+			"myProgressFor": "我在「{{title}}」的{{role}}进度"
 		},
 		"myWork": {
 			"due": {
@@ -3910,6 +3992,85 @@
 			"manage": "Manage workspaces",
 			"otherWorkspaces": "Go to workspaces",
 			"title": "Workspace archived"
+		},
+		"orgViews": {
+			"loadError": "加载失败",
+			"scope": {
+				"label": "范围",
+				"mine": "我的下属",
+				"unit": "某部门",
+				"all": "全部",
+				"pickUnit": "选择部门"
+			},
+			"filters": {
+				"project": "产品线",
+				"role": "角色",
+				"progress": "个人进度",
+				"priority": "优先级",
+				"overdueOnly": "仅逾期"
+			}
+		},
+		"leaderBoard": {
+			"title": "负责人看板",
+			"threshold_other": "进行中超过 {{count}} 天无变化算停滞。",
+			"noUnit": "未分配部门",
+			"counts": {
+				"doing": "进行中",
+				"overdue": "逾期",
+				"stuck": "卡点"
+			},
+			"noCards": "没有符合筛选的任务。",
+			"moreCards_other": "还有 {{count}} 张未显示",
+			"emptyTitle": "没有可显示的人",
+			"emptyDescription": "该范围内有任务的人会在这里各占一列。",
+			"stuck": {
+				"overdue": "已逾期",
+				"idle_other": "停滞 {{count}} 天",
+				"lastRole": "只差{{role}}",
+				"lastRoleUnknown": "只差最后一个角色"
+			}
+		},
+		"dashboard": {
+			"title": "仪表盘",
+			"noData": "该范围内没有数据。",
+			"range": {
+				"label": "创建时间",
+				"from": "创建于",
+				"to": "至"
+			},
+			"totals": {
+				"tasks": "需求总数",
+				"overdue": "逾期",
+				"readyForReview": "可验收",
+				"stuck": "卡点",
+				"byStatus": "各状态数"
+			},
+			"workload": {
+				"title": "任务分工",
+				"description": "每人每个任务只计一次，按其最落后的角色。",
+				"summary": "{{name}}：共 {{total}}，未开始 {{todo}}，进行中 {{doing}}，已完成 {{done}}"
+			},
+			"byProject": {
+				"title": "产品线分布"
+			},
+			"roleCompletion": {
+				"title": "角色环节完成率",
+				"description": "各角色已完成的比例，看卡在哪个环节。"
+			},
+			"stuckList": {
+				"title": "卡点榜",
+				"empty": "没有卡点。",
+				"task": "任务",
+				"blockedBy": "卡在谁",
+				"reason": "原因",
+				"days": "卡了几天",
+				"dayCount_other": "{{count}} 天"
+			},
+			"stuckReason": {
+				"overdue": "已逾期",
+				"idle": "停滞",
+				"last_role": "只差一个角色"
+			}
 		}
 	},
 	"team": {

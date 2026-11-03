@@ -12,6 +12,7 @@ export type GenericWebhookEvents = {
   taskDueDateChanged: boolean;
   taskAssigneeChanged: boolean;
   taskUnassigned: boolean;
+  taskMemberChanged: boolean;
   dueDateReminder: boolean;
 };
 
@@ -56,6 +57,10 @@ export const GENERIC_WEBHOOK_EVENT_ITEMS: EventChecklistItem<
     labelKey: "settings:genericWebhookIntegration.events.taskUnassigned",
   },
   {
+    id: "taskMemberChanged",
+    labelKey: "settings:genericWebhookIntegration.events.taskMemberChanged",
+  },
+  {
     id: "taskDueDateChanged",
     labelKey: "settings:genericWebhookIntegration.events.taskDueDateChanged",
   },
@@ -84,6 +89,7 @@ export function toGenericWebhookEvents(
     taskDueDateChanged: events?.taskDueDateChanged ?? false,
     taskAssigneeChanged: events?.taskAssigneeChanged ?? false,
     taskUnassigned: events?.taskUnassigned ?? false,
+    taskMemberChanged: events?.taskMemberChanged ?? false,
     dueDateReminder: events?.dueDateReminder ?? false,
   };
 }

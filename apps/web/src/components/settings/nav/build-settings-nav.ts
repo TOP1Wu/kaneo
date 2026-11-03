@@ -7,6 +7,7 @@ import {
   Import,
   KeyRound,
   LayoutDashboard,
+  Network,
   ScrollText,
   Server,
   Settings,
@@ -36,6 +37,8 @@ type BuildSettingsNavInput = {
   workspaceName?: string;
   billingEnabled: boolean;
   canImport: boolean;
+  /** Workspace owners and admins maintain the org structure. */
+  canManageOrg?: boolean;
   /** The signed-in user's instance permissions. */
   adminPermissions: readonly InstancePermission[];
   projects: { id: string; name: string; icon?: string | null }[];
@@ -131,6 +134,7 @@ export function buildSettingsNav({
   workspaceName,
   billingEnabled,
   canImport,
+  canManageOrg = false,
   adminPermissions,
   projects,
 }: BuildSettingsNavInput): SettingsNav {
@@ -200,6 +204,16 @@ export function buildSettingsNav({
           to: "/dashboard/settings/workspace/labels",
           icon: Tag,
         },
+        ...(canManageOrg
+          ? [
+              {
+                id: "workspace-org",
+                label: t("settings:org.title"),
+                to: "/dashboard/settings/workspace/org",
+                icon: Network,
+              },
+            ]
+          : []),
         ...(canImport
           ? [
               {

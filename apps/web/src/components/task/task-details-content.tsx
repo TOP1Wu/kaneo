@@ -8,6 +8,7 @@ import useGetProject from "@/hooks/queries/project/use-get-project";
 import useGetTask from "@/hooks/queries/task/use-get-task";
 import useGetTaskRelations from "@/hooks/queries/task-relation/use-get-task-relations";
 import { cn } from "@/lib/cn";
+import { TaskMembersSection } from "@/components/task-member/task-members-section";
 import type { ExternalLink } from "@/types/external-link";
 import { TaskActivity } from "./task-activity";
 import TaskDescription from "./task-description";
@@ -80,6 +81,11 @@ export default function TaskDetailsContent({
       <TaskDescription taskId={taskId} />
 
       <div className="mt-6 flex flex-col gap-6">
+        <TaskMembersSection
+          taskId={taskId}
+          projectId={projectId}
+          workspaceId={workspaceId}
+        />
         {task && (
           <TaskSubtasks
             taskId={taskId}

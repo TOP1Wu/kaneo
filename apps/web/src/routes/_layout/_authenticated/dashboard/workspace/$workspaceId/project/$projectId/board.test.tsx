@@ -65,6 +65,10 @@ vi.mock("@/components/kanban-board", () => ({
   ),
 }));
 vi.mock("@/components/list-view", () => ({ default: () => null }));
+vi.mock("@/components/task-member/task-member-summary-provider", () => ({
+  TaskMemberSummaryProvider: ({ children }: { children: ReactNode }) =>
+    children,
+}));
 vi.mock("@/components/page-title", () => ({ default: () => null }));
 vi.mock("@/components/shared/modals/create-task-modal", () => ({
   default: () => null,

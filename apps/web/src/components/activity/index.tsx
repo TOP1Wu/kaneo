@@ -1,4 +1,11 @@
-import { Calendar, CircleAlert, History, UserRound } from "lucide-react";
+import {
+  BadgeCheck,
+  Calendar,
+  CircleAlert,
+  History,
+  UserRound,
+  UsersRound,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import useActiveWorkspace from "@/hooks/queries/workspace/use-active-workspace";
 import useGetWorkspaceUsers from "@/hooks/queries/workspace-users/use-get-workspace-users";
@@ -13,6 +20,10 @@ import {
 } from "../ui/preview-card";
 import { TimelineContent, TimelineItem } from "../ui/timeline";
 import CommentCard from "./comment-card";
+import {
+  describeMemberActivity,
+  isMemberActivity,
+} from "./member-activity-text";
 import { isCommentActivity } from "./utils";
 
 type ActivityItem = {
@@ -60,6 +71,13 @@ function getActivityTypeIcon(type: string) {
     case "assignee_changed":
     case "unassigned":
       return <UserRound className={iconClass} />;
+    case "task_ready_for_review":
+      return <BadgeCheck className={iconClass} />;
+    case "member_added":
+    case "member_removed":
+    case "member_role_changed":
+    case "member_progress_changed":
+      return <UsersRound className={iconClass} />;
     default:
       return <History className={iconClass} />;
   }
@@ -172,6 +190,14 @@ function renderActivityContent({
 }) {
   const content = activity.content || "";
   const eventData = getEventDataRecord(activity.eventData);
+
+  if (isMemberActivity(activity.type)) {
+    return (
+      <span className="text-muted-foreground">
+        {describeMemberActivity(activity.type, eventData, t)}
+      </span>
+    );
+  }
 
   if (activity.type === "priority_changed") {
     if (eventData) {

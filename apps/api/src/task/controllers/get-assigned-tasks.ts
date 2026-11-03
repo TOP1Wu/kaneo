@@ -141,7 +141,9 @@ async function getAssignedTasks(
   const roles = tasks.length
     ? await db
         .select({
+          memberId: taskMemberTable.id,
           taskId: taskMemberTable.taskId,
+          roleId: taskMemberTable.roleId,
           roleName: taskRoleTable.name,
           progress: taskMemberTable.progress,
         })
@@ -160,11 +162,21 @@ async function getAssignedTasks(
     : [];
   const rolesByTask = new Map<
     string,
-    Array<{ roleName: string; progress: MemberProgress }>
+    Array<{
+      memberId: string;
+      roleId: string;
+      roleName: string;
+      progress: MemberProgress;
+    }>
   >();
-  for (const { taskId, roleName, progress } of roles) {
+  for (const { taskId, memberId, roleId, roleName, progress } of roles) {
     const taskRoles = rolesByTask.get(taskId) ?? [];
-    taskRoles.push({ roleName, progress: progress as MemberProgress });
+    taskRoles.push({
+      memberId,
+      roleId,
+      roleName,
+      progress: progress as MemberProgress,
+    });
     rolesByTask.set(taskId, taskRoles);
   }
 

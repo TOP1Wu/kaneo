@@ -15,11 +15,13 @@ import { useProjectTaskView } from "@/components/project/toolbar/use-project-tas
 import { ConfirmDialog } from "@/components/settings/confirm-dialog";
 import CreateTaskModal from "@/components/shared/modals/create-task-modal";
 import TaskDetailsSheet from "@/components/task/task-details-sheet";
+import { TaskMemberSummaryProvider } from "@/components/task-member/task-member-summary-provider";
 import { useUpdateTask } from "@/hooks/mutations/task/use-update-task";
 import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
 import { useBoardSort } from "@/hooks/use-board-sort";
 import { sortTasks } from "@/lib/sort-tasks";
 import { countBacklogTasks } from "@/lib/task-filters/count-tasks";
+import { boardTaskIds } from "@/lib/task-member/board-task-ids";
 import { toast } from "@/lib/toast";
 import useProjectStore from "@/store/project";
 
@@ -79,6 +81,10 @@ function RouteComponent() {
       archivedTasks: sortTasks(filteredProject.archivedTasks || [], sort),
     };
   }, [filters.filteredProject, sort]);
+  const summaryTaskIds = useMemo(
+    () => boardTaskIds(sortedProject),
+    [sortedProject],
+  );
 
   const handleMoveAllPlannedToTodo = () => {
     if (!project) return;
@@ -177,10 +183,15 @@ function RouteComponent() {
       <div className="relative flex flex-col h-full min-h-0 overflow-hidden">
         <div className="flex-1 overflow-hidden bg-card h-full">
           {sortedProject ? (
-            <BacklogListView
-              project={sortedProject}
-              disableDragDrop={sort.field !== "position"}
-            />
+            <TaskMemberSummaryProvider
+              projectId={sortedProject.id}
+              taskIds={summaryTaskIds}
+            >
+              <BacklogListView
+                project={sortedProject}
+                disableDragDrop={sort.field !== "position"}
+              />
+            </TaskMemberSummaryProvider>
           ) : (
             <div className="flex h-full items-center justify-center">
               <div className="text-center space-y-4">

@@ -312,6 +312,11 @@ export const assignedTasksSchema = z
           myRoles: z
             .array(
               z.object({
+                memberId: z.string().openapi({
+                  description:
+                    "The task member row, for updating this progress.",
+                }),
+                roleId: z.string(),
                 roleName: z.string(),
                 progress: z.enum(["todo", "doing", "done"]),
               }),

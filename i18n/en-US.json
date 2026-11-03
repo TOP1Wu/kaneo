@@ -2219,7 +2219,8 @@
 				"taskDueDateChanged": "Due date changed",
 				"taskAssigneeChanged": "Assignee changed",
 				"taskUnassigned": "Task unassigned",
-				"dueDateReminder": "Due date reminder"
+				"dueDateReminder": "Due date reminder",
+				"taskMemberChanged": "Task members changed"
 			},
 			"reminderLeadTimeLabel": "Hours before a task is due",
 			"connect": "Connect webhook",
@@ -2840,6 +2841,36 @@
 				"response": "Invalid response"
 			},
 			"save": "Save"
+		},
+		"org": {
+			"title": "Org structure",
+			"subtitle": "Departments, their members, and who leads them. Leaders see their reports' tasks.",
+			"adminOnly": "Only workspace owners and admins can edit the org structure.",
+			"loadError": "Couldn't load the org structure",
+			"saveError": "Couldn't save the change",
+			"emptyTitle": "No departments yet",
+			"emptyDescription": "Add a department, then its members and leaders.",
+			"treeLabel": "Departments",
+			"newUnit": "New department",
+			"editUnit": "Edit department",
+			"editUnitNamed": "Edit {{name}}",
+			"deleteUnitNamed": "Delete {{name}}",
+			"deleteTitle": "Delete {{name}}?",
+			"deleteDescription": "Its member list goes with it. Move or delete its child departments first.",
+			"unitName": "Name",
+			"parent": "Parent department",
+			"noParent": "None (top level)",
+			"save": "Save",
+			"selectUnit": "Pick a department to see its members.",
+			"membersOf": "Members of {{name}}",
+			"addMember": "Add member",
+			"noMembers": "No members yet.",
+			"member": "Member",
+			"leader": "Leader",
+			"leaderFor": "{{name}} leads this department",
+			"removeMember": "Remove {{name}}",
+			"deleteHasChildren": "Move or delete its child departments first.",
+			"moveIntoSelf": "A department can't move under itself or one of its children."
 		}
 	},
 	"navigation": {
@@ -2873,7 +2904,9 @@
 			"home": "Home",
 			"inbox": "Inbox",
 			"myTasks": "My tasks",
-			"invitePeople": "Invite people"
+			"invitePeople": "Invite people",
+			"leaderBoard": "Leader board",
+			"dashboard": "Dashboard"
 		},
 		"projectList": {
 			"viewProject": "View Project",
@@ -3233,6 +3266,19 @@
 			},
 			"importedFrom": "Imported from {{source}}",
 			"importedBy": "Imported by {{name}}"
+		},
+		"member": {
+			"added": "added {{name}} as {{role}}",
+			"removed": "removed {{name}} ({{role}})",
+			"roleChanged": "changed {{name}}'s role from {{from}} to {{to}}",
+			"progressSelf": "marked their {{role}} work {{progress}}",
+			"progressOnBehalf": "marked {{name}}'s {{role}} work {{progress}} on their behalf",
+			"readyForReview": "finished the last piece; the task is ready for review",
+			"progress": {
+				"todo": "not started",
+				"doing": "in progress",
+				"done": "done"
+			}
 		}
 	},
 	"tasks": {
@@ -3825,6 +3871,40 @@
 			"startsOn": "Starts {{date}}",
 			"beforeStart": "{{date}} is before the start date",
 			"afterDue": "{{date}} is after the due date"
+		},
+		"members": {
+			"title": "Members",
+			"add": "Add members",
+			"addTitle": "Add members",
+			"addDescription": "Pick a role, then everyone who takes it on.",
+			"addCount_one": "Add {{count}} person",
+			"addCount_other": "Add {{count}} people",
+			"addError": "Couldn't add members",
+			"removeError": "Couldn't remove the member",
+			"updateError": "Couldn't update the member",
+			"loadError": "Couldn't load members",
+			"empty": "No members yet.",
+			"role": "Role",
+			"rolePlaceholder": "Choose a role",
+			"searchPeople": "Search people",
+			"noCandidates": "No one else can take this role here.",
+			"changeRole": "Change role",
+			"remove": "Remove from task",
+			"actionsFor": "Actions for {{name}}",
+			"you": "(you)",
+			"doneAt": "Completed on",
+			"progressFor": "Progress for {{name}} ({{role}})",
+			"progressLabel": "Member progress by role",
+			"noPermission": "Only this member, the primary owner, their leader, or an admin can change this.",
+			"readyForReview": "Ready for review",
+			"onBehalfTitle": "Change someone else's progress?",
+			"onBehalfDescription": "This sets {{name}}'s {{role}} progress to \"{{progress}}\" and is recorded as an edit on their behalf.",
+			"onBehalfConfirm": "Change on their behalf",
+			"progress": {
+				"todo": "Not started",
+				"doing": "In progress",
+				"done": "Done"
+			}
 		}
 	},
 	"invitations": {
@@ -3977,15 +4057,101 @@
 			"groupBy": {
 				"label": "Group by",
 				"dueDate": "Due date",
-				"project": "Project"
+				"project": "Project",
+				"myProgress": "My progress"
 			},
-			"truncated": "Showing the first {{shown}} of {{total}} tasks."
+			"truncated": "Showing the first {{shown}} of {{total}} tasks.",
+			"assigneeOnly": "Assigned to me",
+			"myProgressFor": "My {{role}} progress on {{title}}"
 		},
 		"archived": {
 			"title": "Workspace archived",
 			"description": "Contact an administrator to restore access.",
 			"otherWorkspaces": "Go to workspaces",
 			"manage": "Manage workspaces"
+		},
+		"orgViews": {
+			"loadError": "Couldn't load this view",
+			"scope": {
+				"label": "Whose work",
+				"mine": "My team",
+				"unit": "Department",
+				"all": "Everyone",
+				"pickUnit": "Department"
+			},
+			"filters": {
+				"project": "Project",
+				"role": "Role",
+				"progress": "Progress",
+				"priority": "Priority",
+				"overdueOnly": "Overdue only"
+			}
+		},
+		"leaderBoard": {
+			"title": "Leader board",
+			"threshold_one": "Work counts as stalled after {{count}} day without a progress change.",
+			"threshold_other": "Work counts as stalled after {{count}} days without a progress change.",
+			"noUnit": "No department",
+			"counts": {
+				"doing": "in progress",
+				"overdue": "overdue",
+				"stuck": "stuck"
+			},
+			"noCards": "Nothing matches the filters.",
+			"moreCards_one": "{{count}} more task not shown",
+			"moreCards_other": "{{count}} more tasks not shown",
+			"emptyTitle": "No one to show",
+			"emptyDescription": "People in this scope with tasks show up here, one column each.",
+			"stuck": {
+				"overdue": "Overdue",
+				"idle_one": "Stalled {{count}} day",
+				"idle_other": "Stalled {{count}} days",
+				"lastRole": "Only {{role}} left",
+				"lastRoleUnknown": "Only the last role left"
+			}
+		},
+		"dashboard": {
+			"title": "Dashboard",
+			"noData": "No data in this scope.",
+			"range": {
+				"label": "Created between",
+				"from": "Created from",
+				"to": "to"
+			},
+			"totals": {
+				"tasks": "Tasks",
+				"overdue": "Overdue",
+				"readyForReview": "Ready for review",
+				"stuck": "Stuck",
+				"byStatus": "Tasks by status"
+			},
+			"workload": {
+				"title": "Workload",
+				"description": "Each person counts once per task, at their furthest-behind role.",
+				"summary": "{{name}}: {{total}} tasks, {{todo}} not started, {{doing}} in progress, {{done}} done"
+			},
+			"byProject": {
+				"title": "By project"
+			},
+			"roleCompletion": {
+				"title": "Role completion",
+				"description": "Share of member rows done per role, to see which stage holds things up."
+			},
+			"stuckList": {
+				"title": "Stuck tasks",
+				"empty": "Nothing is stuck.",
+				"task": "Task",
+				"blockedBy": "Waiting on",
+				"reason": "Reason",
+				"days": "Days",
+				"dayCount_one": "{{count}} day",
+				"dayCount_other": "{{count}} days"
+			},
+			"stuckReason": {
+				"overdue": "Overdue",
+				"idle": "Stalled",
+				"last_role": "One role left"
+			}
 		}
 	},
 	"team": {
