@@ -19,6 +19,11 @@ type ScopeSwitcherProps = {
   onChange: (value: ScopeSelection) => void;
 };
 
+/**
+ * "Me & reports" and "Everyone" are plain toggles; departments are picked by
+ * name from a dropdown (the units /my-scope allows), never a bare "Department"
+ * option. Picking a department switches to scope=unit.
+ */
 export function ScopeSwitcher({
   options,
   units,
@@ -26,13 +31,18 @@ export function ScopeSwitcher({
   onChange,
 }: ScopeSwitcherProps) {
   const { t } = useTranslation();
-  const labels: Record<ScopeName, string> = {
+  const labels: Record<Exclude<ScopeName, "unit">, string> = {
     mine: t("workspace:orgViews.scope.mine"),
-    unit: t("workspace:orgViews.scope.unit"),
     all: t("workspace:orgViews.scope.all"),
   };
+  const toggles = options.scopes.filter(
+    (scope): scope is Exclude<ScopeName, "unit"> => scope !== "unit",
+  );
   const unitOptions = units.filter((unit) => options.unitIds.includes(unit.id));
-  const unitName = unitOptions.find((unit) => unit.id === value.unitId)?.name;
+  const pickedUnit =
+    value.scope === "unit"
+      ? unitOptions.find((unit) => unit.id === value.unitId)
+      : undefined;
 
   return (
     <div className="flex flex-wrap items-center gap-2">
@@ -40,7 +50,7 @@ export function ScopeSwitcher({
         <legend className="sr-only">
           {t("workspace:orgViews.scope.label")}
         </legend>
-        {options.scopes.map((scope) => (
+        {toggles.map((scope) => (
           <Button
             key={scope}
             type="button"
@@ -48,31 +58,30 @@ export function ScopeSwitcher({
             variant={value.scope === scope ? "secondary" : "ghost"}
             aria-pressed={value.scope === scope}
             className={cn(value.scope !== scope && "text-muted-foreground")}
-            onClick={() =>
-              onChange(
-                scope === "unit"
-                  ? { scope, unitId: value.unitId ?? options.unitIds[0] }
-                  : { scope },
-              )
-            }
+            onClick={() => onChange({ scope })}
           >
             {labels[scope]}
           </Button>
         ))}
       </fieldset>
-      {value.scope === "unit" && unitOptions.length > 0 && (
+      {options.scopes.includes("unit") && unitOptions.length > 0 && (
         <Select
-          value={value.unitId ?? null}
+          value={pickedUnit?.id ?? null}
           onValueChange={(unitId) => {
             if (typeof unitId === "string") onChange({ scope: "unit", unitId });
           }}
         >
           <SelectTrigger
             size="sm"
-            className="w-44"
+            className={cn(
+              "w-44",
+              pickedUnit && "border-ring/60 bg-secondary font-medium",
+            )}
             aria-label={t("workspace:orgViews.scope.pickUnit")}
           >
-            <SelectValue>{unitName}</SelectValue>
+            <SelectValue placeholder={t("workspace:orgViews.scope.pickUnit")}>
+              {pickedUnit?.name}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {unitOptions.map((unit) => (

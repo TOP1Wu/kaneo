@@ -12,7 +12,12 @@ import type {
 
 export const STUCK_LIST_LIMIT = 50;
 
-type StatusCount = { status: string; statusName: string; count: number };
+type StatusCount = {
+  status: string;
+  statusName: string;
+  isFinal: boolean;
+  count: number;
+};
 
 const REASON_RANK: Record<StuckReason, number> = {
   overdue: 3,
@@ -28,6 +33,7 @@ function countByStatus(tasks: readonly ScopedTask[]): StatusCount[] {
     const position = task.statusPosition ?? Number.MAX_SAFE_INTEGER;
     if (bucket) {
       bucket.count += 1;
+      bucket.isFinal ||= task.isCompleted;
       if (position < bucket.position) {
         bucket.position = position;
         bucket.statusName = task.statusName;
@@ -36,6 +42,7 @@ function countByStatus(tasks: readonly ScopedTask[]): StatusCount[] {
       buckets.set(task.status, {
         status: task.status,
         statusName: task.statusName,
+        isFinal: task.isCompleted,
         count: 1,
         position,
       });

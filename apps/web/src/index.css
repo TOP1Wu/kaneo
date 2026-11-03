@@ -30,6 +30,33 @@ input:-webkit-autofill:active {
   }
 }
 
+/* An always-visible horizontal scrollbar for wide boards. The global thin,
+   border-colored scrollbar nearly disappears there, and macOS overlay
+   scrollbars hide entirely, so people miss columns off to the right.
+   Chromium ignores ::-webkit-scrollbar once scrollbar-color is set, so the
+   standard properties stay auto there and only apply where webkit styling is
+   unsupported (Firefox). Custom webkit scrollbars are always shown. */
+@utility scrollbar-visible {
+  scrollbar-width: auto;
+  scrollbar-color: auto;
+
+  &::-webkit-scrollbar {
+    height: 0.625rem;
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--board-lane);
+    border-radius: 9999px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: color-mix(in srgb, var(--muted-foreground) 60%, transparent);
+    border-radius: 9999px;
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-color: var(--muted-foreground) var(--board-lane);
+  }
+}
+
 /* Reduced motion: keep opacity feedback, drop movement (scale/translate) and
    container morphs. Tailwind v4 scale/translate utilities use the standalone
    CSS properties, so forcing them here neutralizes entrance/exit movement

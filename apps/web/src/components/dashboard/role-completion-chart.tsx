@@ -1,5 +1,7 @@
 import { useTranslation } from "react-i18next";
 import type { Dashboard } from "@/fetchers/dashboard/get-dashboard";
+import { cn } from "@/lib/cn";
+import { PROGRESS_TONE, PROGRESS_TRACK } from "@/lib/task-member/progress-tone";
 import { ChartCard } from "./chart-card";
 import { percent } from "./chart-helpers";
 
@@ -38,10 +40,16 @@ export function RoleCompletionChart({
                   aria-valuemin={0}
                   aria-valuemax={100}
                   aria-valuenow={value}
-                  className="h-2 overflow-hidden rounded-full bg-muted"
+                  className={cn(
+                    "h-2 overflow-hidden rounded-full",
+                    PROGRESS_TRACK,
+                  )}
                 >
                   <div
-                    className="h-full rounded-full bg-primary"
+                    className={cn(
+                      "h-full rounded-full",
+                      PROGRESS_TONE.done.bar,
+                    )}
                     style={{ width: `${value}%` }}
                   />
                 </div>

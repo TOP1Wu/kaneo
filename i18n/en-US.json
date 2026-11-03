@@ -4074,10 +4074,9 @@
 			"loadError": "Couldn't load this view",
 			"scope": {
 				"label": "Whose work",
-				"mine": "My team",
-				"unit": "Department",
+				"mine": "Me & reports",
 				"all": "Everyone",
-				"pickUnit": "Department"
+				"pickUnit": "Select department"
 			},
 			"filters": {
 				"project": "Project",
@@ -4089,6 +4088,8 @@
 		},
 		"leaderBoard": {
 			"title": "Leader board",
+			"me": "Me",
+			"meColumn": "{{name}} (me)",
 			"threshold_one": "Work counts as stalled after {{count}} day without a progress change.",
 			"threshold_other": "Work counts as stalled after {{count}} days without a progress change.",
 			"noUnit": "No department",

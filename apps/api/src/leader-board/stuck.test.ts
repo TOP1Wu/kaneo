@@ -5,6 +5,7 @@ import {
   isPastDue,
   type MemberState,
   mostBehind,
+  overdueDays,
   stuckThresholdDays,
 } from "./stuck";
 
@@ -31,6 +32,26 @@ describe("isPastDue", () => {
   });
 });
 
+describe("overdueDays", () => {
+  it("counts whole UTC days from the due day to today", () => {
+    const at = (iso: string) => new Date(iso);
+    expect(overdueDays(at("2026-11-09T00:00:00.000Z"), now)).toBe(1);
+    expect(
+      overdueDays(
+        at("2026-11-09T00:00:00.000Z"),
+        at("2026-11-10T00:00:00.000Z"),
+      ),
+    ).toBe(1);
+    expect(
+      overdueDays(
+        at("2026-11-09T00:00:00.000Z"),
+        at("2026-11-10T23:59:59.000Z"),
+      ),
+    ).toBe(1);
+    expect(overdueDays(at("2026-11-07T15:30:00.000Z"), now)).toBe(3);
+  });
+});
+
 describe("evaluateStuck: overdue", () => {
   const dueDate = new Date("2026-11-01T00:00:00.000Z");
 
@@ -43,8 +64,21 @@ describe("evaluateStuck: overdue", () => {
       now,
       7,
     );
-    expect(verdicts.get("a")).toEqual({ reason: "overdue", days: 2 });
+    expect(verdicts.get("a")).toEqual({ reason: "overdue", days: 9 });
     expect(verdicts.get("b")).toEqual({ reason: null, days: null });
+  });
+
+  it("counts days past due, not since the last update", () => {
+    const verdicts = evaluateStuck(
+      {
+        dueDate: new Date("2026-11-09T00:00:00.000Z"),
+        members: [member("a", "dev", "doing", 0)],
+      },
+      now,
+      7,
+    );
+    // Due yesterday and touched today: 1 day overdue, never 0.
+    expect(verdicts.get("a")).toEqual({ reason: "overdue", days: 1 });
   });
 
   it("wins over idle", () => {
@@ -53,7 +87,7 @@ describe("evaluateStuck: overdue", () => {
       now,
       7,
     );
-    expect(verdicts.get("a")).toEqual({ reason: "overdue", days: 30 });
+    expect(verdicts.get("a")).toEqual({ reason: "overdue", days: 9 });
   });
 });
 

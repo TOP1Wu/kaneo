@@ -53,6 +53,21 @@ export function isPastDue(dueDate: Date | null, now: Date): boolean {
   );
 }
 
+/**
+ * Whole UTC calendar days from the due day to today. Only meaningful once
+ * `isPastDue` holds, which makes it at least 1 the day after the due day.
+ */
+export function overdueDays(dueDate: Date, now: Date): number {
+  const utcDay = (date: Date) => Math.floor(date.getTime() / DAY_MS);
+  return utcDay(now) - utcDay(dueDate);
+}
+
+/** Whole days since the most recent update among `rows`. */
+function daysSinceLatest(rows: readonly MemberState[], now: Date): number {
+  const latest = Math.max(...rows.map((row) => row.updatedAt.getTime()));
+  return Math.max(0, Math.floor((now.getTime() - latest) / DAY_MS));
+}
+
 /** The one role still unfinished when every other role is done, if any. */
 function lastOpenRole(members: readonly MemberState[]): string | null {
   const roles = new Set<string>();
@@ -71,8 +86,9 @@ function lastOpenRole(members: readonly MemberState[]): string | null {
  * is stuck when the task is overdue and they are not done, when one of their
  * `doing` rows has not changed for more than `thresholdDays`, or when theirs is
  * the only role left unfinished. Overdue wins over idle, idle over last_role.
- * `days` counts from the most recent update of the rows that make the person
- * stuck, so finishing another role on the task does not reset it.
+ * For overdue, `days` is how many days the task is past due. Otherwise it
+ * counts from the most recent update of the rows that make the person stuck,
+ * so finishing another role on the task does not reset it.
  */
 export function evaluateStuck(
   task: { dueDate: Date | null; members: readonly MemberState[] },
@@ -86,7 +102,10 @@ export function evaluateStuck(
     byUser.set(member.userId, rows);
   }
 
-  const pastDue = isPastDue(task.dueDate, now);
+  const pastDueDays =
+    task.dueDate && isPastDue(task.dueDate, now)
+      ? overdueDays(task.dueDate, now)
+      : null;
   const lastRole = lastOpenRole(task.members);
   const idleBefore = now.getTime() - thresholdDays * DAY_MS;
   const verdicts = new Map<string, StuckVerdict>();
@@ -98,27 +117,18 @@ export function evaluateStuck(
     );
     const lastRoleRows = unfinished.filter((row) => row.roleId === lastRole);
 
-    let reason: StuckReason | null = null;
-    let culprits: MemberState[] = [];
-    if (pastDue && unfinished.length > 0) {
-      reason = "overdue";
-      culprits = unfinished;
+    let verdict: StuckVerdict = { reason: null, days: null };
+    if (pastDueDays !== null && unfinished.length > 0) {
+      verdict = { reason: "overdue", days: pastDueDays };
     } else if (idle.length > 0) {
-      reason = "idle";
-      culprits = idle;
+      verdict = { reason: "idle", days: daysSinceLatest(idle, now) };
     } else if (lastRole && lastRoleRows.length > 0) {
-      reason = "last_role";
-      culprits = lastRoleRows;
+      verdict = {
+        reason: "last_role",
+        days: daysSinceLatest(lastRoleRows, now),
+      };
     }
-
-    const latest = Math.max(...culprits.map((row) => row.updatedAt.getTime()));
-    verdicts.set(userId, {
-      reason,
-      days:
-        reason === null
-          ? null
-          : Math.max(0, Math.floor((now.getTime() - latest) / DAY_MS)),
-    });
+    verdicts.set(userId, verdict);
   }
   return verdicts;
 }

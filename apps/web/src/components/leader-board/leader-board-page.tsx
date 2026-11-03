@@ -5,6 +5,7 @@ import WorkspaceLayout from "@/components/common/workspace-layout";
 import { BoardFiltersBar } from "@/components/org-views/board-filters-bar";
 import { ScopeSwitcher } from "@/components/org-views/scope-switcher";
 import { useOrgViewScope } from "@/components/org-views/use-org-view-scope";
+import useAuth from "@/components/providers/auth-provider/hooks/use-auth";
 import TaskDetailsSheet from "@/components/task/task-details-sheet";
 import {
   Empty,
@@ -15,11 +16,14 @@ import {
 } from "@/components/ui/empty";
 import { Skeleton } from "@/components/ui/skeleton";
 import useGetLeaderBoard from "@/hooks/queries/leader-board/use-get-leader-board";
+import { useMoreToTheRight } from "@/hooks/use-more-to-the-right";
+import { cn } from "@/lib/cn";
 import {
   EMPTY_BOARD_FILTERS,
   type BoardFilters,
 } from "@/lib/org-scope/scope-query";
 import { LeaderBoardColumn } from "./leader-board-column";
+import { meFirst } from "./me-first";
 
 type OpenTask = { taskId: string; projectId: string };
 
@@ -30,7 +34,9 @@ export function LeaderBoardPage({ workspaceId }: { workspaceId: string }) {
   const [filters, setFilters] = useState<BoardFilters>(EMPTY_BOARD_FILTERS);
   const [open, setOpen] = useState<OpenTask | null>(null);
   const board = useGetLeaderBoard(workspaceId, selection, filters, ready);
-  const people = board.data?.people ?? [];
+  const { user } = useAuth();
+  const people = meFirst(board.data?.people ?? [], user?.id);
+  const lanes = useMoreToTheRight<HTMLDivElement>(people.length);
 
   return (
     <WorkspaceLayout title={t("workspace:leaderBoard.title")}>
@@ -59,7 +65,10 @@ export function LeaderBoardPage({ workspaceId }: { workspaceId: string }) {
         {!ready || board.isPending ? (
           <div className="flex gap-3 p-4">
             {[1, 2, 3].map((key) => (
-              <Skeleton key={key} className="h-80 w-72 rounded-xl" />
+              <Skeleton
+                key={key}
+                className="h-80 w-[300px] shrink-0 rounded-xl"
+              />
             ))}
           </div>
         ) : board.isError ? (
@@ -81,16 +90,31 @@ export function LeaderBoardPage({ workspaceId }: { workspaceId: string }) {
             </EmptyHeader>
           </Empty>
         ) : (
-          <div className="flex min-h-0 flex-1 gap-3 overflow-x-auto p-4">
-            {people.map((person) => (
-              <LeaderBoardColumn
-                key={person.userId}
-                person={person}
-                onOpen={(card) =>
-                  setOpen({ taskId: card.taskId, projectId: card.projectId })
-                }
-              />
-            ))}
+          <div className="relative flex min-h-0 flex-1">
+            <div
+              ref={lanes.ref}
+              className="scrollbar-visible flex min-h-0 flex-1 gap-3 overflow-x-auto overscroll-x-contain p-4"
+            >
+              {people.map((person) => (
+                <LeaderBoardColumn
+                  key={person.userId}
+                  person={person}
+                  isMe={person.userId === user?.id}
+                  onOpen={(card) =>
+                    setOpen({ taskId: card.taskId, projectId: card.projectId })
+                  }
+                />
+              ))}
+            </div>
+            {/* Hints at columns past the right edge; gone at the end. */}
+            <div
+              aria-hidden="true"
+              data-testid="lanes-fade"
+              className={cn(
+                "pointer-events-none absolute top-0 right-0 bottom-3 w-16 bg-linear-to-l from-background to-transparent transition-opacity duration-200",
+                lanes.more ? "opacity-100" : "opacity-0",
+              )}
+            />
           </div>
         )}
       </div>

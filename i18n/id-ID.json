@@ -4053,7 +4053,9 @@
 				"overdue": "Overdue"
 			},
 			"threshold_other": "Work counts as stalled after {{count}} days without a progress change.",
-			"title": "Leader board"
+			"title": "Leader board",
+			"me": "Me",
+			"meColumn": "{{name}} (me)"
 		},
 		"orgViews": {
 			"filters": {
@@ -4067,9 +4069,8 @@
 			"scope": {
 				"all": "Everyone",
 				"label": "Whose work",
-				"mine": "My team",
-				"pickUnit": "Department",
-				"unit": "Department"
+				"mine": "Me & reports",
+				"pickUnit": "Select department"
 			}
 		}
 	},

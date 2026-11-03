@@ -1,8 +1,10 @@
 import { useTranslation } from "react-i18next";
 import type { Dashboard } from "@/fetchers/dashboard/get-dashboard";
+import { cn } from "@/lib/cn";
 import { getStatusDisplayLabel } from "@/lib/i18n/domain";
+import { PROGRESS_TRACK, statusTones } from "@/lib/task-member/progress-tone";
 import { ChartCard } from "./chart-card";
-import { percent, statusColors } from "./chart-helpers";
+import { percent } from "./chart-helpers";
 
 export function ProjectDistributionChart({
   byProject,
@@ -11,7 +13,9 @@ export function ProjectDistributionChart({
 }) {
   const { t } = useTranslation();
   const statuses = byProject.flatMap((project) => project.byStatus);
-  const colors = statusColors(statuses.map((entry) => entry.status));
+  // Final columns read as done (green); other statuses stay neutral so green
+  // and blue keep their personal-progress meaning on this page.
+  const colors = statusTones(statuses);
   const legend = [
     ...new Map(statuses.map((entry) => [entry.status, entry])).values(),
   ];
@@ -30,7 +34,9 @@ export function ProjectDistributionChart({
       >
         {legend.map((entry) => (
           <li key={entry.status} className="flex items-center gap-1.5">
-            <span className={`size-2 rounded-sm ${colors.get(entry.status)}`} />
+            <span
+              className={cn("size-2 rounded-sm", colors.get(entry.status))}
+            />
             {getStatusDisplayLabel(entry.status, entry.statusName)}
           </li>
         ))}
@@ -68,7 +74,10 @@ export function ProjectDistributionChart({
                   role="img"
                   aria-label={summary}
                   title={summary}
-                  className="flex h-4 min-w-0 flex-1 overflow-hidden rounded bg-muted/50"
+                  className={cn(
+                    "flex h-4 min-w-0 flex-1 overflow-hidden rounded",
+                    PROGRESS_TRACK,
+                  )}
                 >
                   <div
                     className="flex h-full"
