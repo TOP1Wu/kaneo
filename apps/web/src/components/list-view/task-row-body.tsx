@@ -4,6 +4,7 @@ import { useTaskCardFields } from "@/components/custom-fields/use-task-card-fiel
 import TaskPriorityPopover from "@/components/task/task-priority-popover";
 import { TaskPullRequests } from "@/components/task/task-pull-requests";
 import { TaskRecurrenceBadge } from "@/components/task/task-recurrence-badge";
+import { TaskMemberProgressLine } from "@/components/task-member/task-member-progress-line";
 import { AssigneeButton } from "@/components/task-chips/assignee-button";
 import { ChecklistChip } from "@/components/task-chips/checklist-chip";
 import { DueDateChip } from "@/components/task-chips/due-date-chip";
@@ -99,6 +100,10 @@ export function TaskRowBody({
       </div>
 
       <div className="flex shrink-0 items-center justify-end gap-1">
+        <TaskMemberProgressLine
+          taskId={task.id}
+          className="hidden flex-nowrap md:flex"
+        />
         <CardFieldList fields={cardFields} max={3} />
         {showLabels && (
           <LabelChips task={task} workspaceId={workspaceId} max={2} />

@@ -1167,6 +1167,13 @@
             "items": {
               "type": "object",
               "properties": {
+                "memberId": {
+                  "type": "string",
+                  "description": "The task member row, for updating this progress."
+                },
+                "roleId": {
+                  "type": "string"
+                },
                 "roleName": {
                   "type": "string"
                 },
@@ -1180,6 +1187,8 @@
                 }
               },
               "required": [
+                "memberId",
+                "roleId",
                 "roleName",
                 "progress"
               ]
@@ -7642,6 +7651,9 @@
                 "title": {
                   "type": "string"
                 },
+                "projectId": {
+                  "type": "string"
+                },
                 "projectName": {
                   "type": "string"
                 },
@@ -7683,6 +7695,7 @@
                 "taskId",
                 "ticket",
                 "title",
+                "projectId",
                 "projectName",
                 "stuckReason",
                 "stuckDays",

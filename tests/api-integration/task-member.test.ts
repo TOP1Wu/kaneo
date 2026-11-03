@@ -531,7 +531,12 @@ describe("API integration: task members", () => {
       body: { progress: "done" },
     });
     expect((await mine(lead)).tasks[0]?.myRoles).toEqual([
-      { roleName: "主要负责人", progress: "done" },
+      {
+        memberId: leadRow.id,
+        roleId: leadRow.roleId,
+        roleName: "主要负责人",
+        progress: "done",
+      },
     ]);
     await db
       .update(schema.taskTable)

@@ -1,3 +1,7 @@
+import {
+  describeMemberActivity,
+  isMemberActivity,
+} from "@/components/activity/member-activity-text";
 import type { WorkspaceActivity } from "@/fetchers/activity/get-workspace-activities";
 import { formatDateMedium } from "@/lib/format";
 import { getPriorityLabel, getStatusDisplayLabel } from "@/lib/i18n/domain";
@@ -20,6 +24,10 @@ function formatEventDate(value: unknown) {
 // What the actor did, phrased to follow their name: "Mira <changed status…>".
 export function describeActivity(activity: WorkspaceActivity, t: Translate) {
   const eventData = eventDataOf(activity);
+
+  if (isMemberActivity(activity.type)) {
+    return describeMemberActivity(activity.type, eventData, t);
+  }
 
   switch (activity.type) {
     case "comment":

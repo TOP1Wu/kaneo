@@ -32,6 +32,7 @@ export function createGenericWebhookFormSchema(leadTimeMessage: string) {
         taskDueDateChanged: z.boolean(),
         taskAssigneeChanged: z.boolean(),
         taskUnassigned: z.boolean(),
+        taskMemberChanged: z.boolean(),
         dueDateReminder: z.boolean(),
       }),
       dueDateReminderLeadTimeHours: z.number(),

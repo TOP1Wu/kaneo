@@ -79,6 +79,7 @@ export function buildDashboard({
     taskId: string;
     ticket: string;
     title: string;
+    projectId: string;
     projectName: string;
     stuckReason: StuckReason;
     stuckDays: number;
@@ -149,6 +150,7 @@ export function buildDashboard({
         taskId: task.id,
         ticket: task.ticket,
         title: task.title,
+        projectId: task.projectId,
         projectName: task.projectName,
         stuckReason: reason,
         stuckDays: days,

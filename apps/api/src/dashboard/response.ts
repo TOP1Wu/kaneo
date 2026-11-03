@@ -63,6 +63,7 @@ export const dashboardSchema = z
           taskId: z.string(),
           ticket: z.string(),
           title: z.string(),
+          projectId: z.string(),
           projectName: z.string(),
           stuckReason: stuckReasonSchema.unwrap(),
           stuckDays: z.number().int(),

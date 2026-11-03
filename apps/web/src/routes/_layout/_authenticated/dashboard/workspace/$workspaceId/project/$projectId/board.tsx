@@ -14,11 +14,13 @@ import { useProjectTaskView } from "@/components/project/toolbar/use-project-tas
 import { LayoutSwitch } from "@/components/project/views/layout-switch";
 import CreateTaskModal from "@/components/shared/modals/create-task-modal";
 import TaskDetailsSheet from "@/components/task/task-details-sheet";
+import { TaskMemberSummaryProvider } from "@/components/task-member/task-member-summary-provider";
 import { useGetTasks } from "@/hooks/queries/task/use-get-tasks";
 import { useBoardSort } from "@/hooks/use-board-sort";
 import { cn } from "@/lib/cn";
 import { sortTasks } from "@/lib/sort-tasks";
 import { countColumnTasks } from "@/lib/task-filters/count-tasks";
+import { boardTaskIds } from "@/lib/task-member/board-task-ids";
 import { useBackgroundStore } from "@/store/background";
 import useProjectStore from "@/store/project";
 import { useUserPreferencesStore } from "@/store/user-preferences";
@@ -126,6 +128,10 @@ function RouteComponent() {
       })),
     };
   }, [filters.filteredProject, sort]);
+  const summaryTaskIds = useMemo(
+    () => boardTaskIds(sortedProject),
+    [sortedProject],
+  );
 
   return (
     <ProjectLayout
@@ -216,29 +222,34 @@ function RouteComponent() {
           })}
         >
           {sortedProject ? (
-            viewMode === "board" ? (
-              <KanbanBoard
-                project={sortedProject}
-                disableCollectionActions={boardFetching || boardError}
-                disableDragDrop={
-                  (boardFetching && !boardLoaded) ||
-                  boardError ||
-                  (sort.field !== "position" &&
-                    sort.field !== "number" &&
-                    sort.field !== "priority")
-                }
-                sortedByNumber={sort.field === "number"}
-                sortedByPriority={sort.field === "priority"}
-              />
-            ) : (
-              <ListView
-                project={sortedProject}
-                disableCollectionActions={boardFetching || boardError}
-                disableDragDrop={
-                  boardFetching || boardError || sort.field !== "position"
-                }
-              />
-            )
+            <TaskMemberSummaryProvider
+              projectId={projectId}
+              taskIds={summaryTaskIds}
+            >
+              {viewMode === "board" ? (
+                <KanbanBoard
+                  project={sortedProject}
+                  disableCollectionActions={boardFetching || boardError}
+                  disableDragDrop={
+                    (boardFetching && !boardLoaded) ||
+                    boardError ||
+                    (sort.field !== "position" &&
+                      sort.field !== "number" &&
+                      sort.field !== "priority")
+                  }
+                  sortedByNumber={sort.field === "number"}
+                  sortedByPriority={sort.field === "priority"}
+                />
+              ) : (
+                <ListView
+                  project={sortedProject}
+                  disableCollectionActions={boardFetching || boardError}
+                  disableDragDrop={
+                    boardFetching || boardError || sort.field !== "position"
+                  }
+                />
+              )}
+            </TaskMemberSummaryProvider>
           ) : boardError ? null : (
             <BoardSkeleton />
           )}

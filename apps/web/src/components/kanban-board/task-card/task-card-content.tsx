@@ -3,6 +3,7 @@ import { memo, type TouchEvent, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { TaskPullRequests } from "@/components/task/task-pull-requests";
 import { TaskRecurrenceBadge } from "@/components/task/task-recurrence-badge";
+import { TaskMemberProgressLine } from "@/components/task-member/task-member-progress-line";
 import {
   AlertDialog,
   AlertDialogClose,
@@ -190,6 +191,8 @@ function TaskCardContent({
             >
               {task.title}
             </div>
+
+            <TaskMemberProgressLine taskId={task.id} className="mt-1.5" />
 
             {!taskIsCompleted && (
               <div className="mt-2.5 flex flex-wrap items-center gap-1 empty:hidden">

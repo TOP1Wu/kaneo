@@ -27,6 +27,7 @@ function task(
     projectSlug: "WEB",
     projectIcon: null,
     labels: [],
+    myRoles: [],
   };
 }
 
