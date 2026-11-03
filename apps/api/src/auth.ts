@@ -234,7 +234,7 @@ async function shouldDeliverSignInEmail(email: string) {
   return true;
 }
 
-function getAuthEmailCopy(locale?: string | null, instanceName = "Kaneo") {
+function getAuthEmailCopy(locale?: string | null, instanceName = "齐活") {
   const localeKey = getLocaleKey(locale);
 
   if (localeKey === "de") {

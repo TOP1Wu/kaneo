@@ -1,6 +1,6 @@
 {
 	"common": {
-		"appName": "Kaneo",
+		"appName": "齐活",
 		"actions": {
 			"cancel": "Anuluj",
 			"close": "Zamknij",
@@ -96,7 +96,7 @@
 				"errorToast": "Nie udało się utworzyć projektu"
 			},
 			"createWorkspace": {
-				"breadcrumbKaneo": "KANEO",
+				"breadcrumbKaneo": "齐活",
 				"title": "Utwórz nowy obszar roboczy",
 				"description": "Utwórz nowy obszar roboczy, podając jego nazwę.",
 				"namePlaceholder": "Nazwa obszaru roboczego",
@@ -185,7 +185,7 @@
 				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Użyj stałego adresu e-mail. Na adresy jednorazowe nie można zakładać kont."
 			},
 			"instanceStatusError": "Nie można połączyć się z serwerem. Spróbuj ponownie za chwilę.",
-			"heading": "Zaloguj się do Kaneo",
+			"heading": "Zaloguj się do 齐活",
 			"submitPassword": "Zaloguj się",
 			"invitation": {
 				"title": "{{inviterName}} zaprasza Cię do {{workspaceName}}",
@@ -193,7 +193,7 @@
 				"description": "Zaloguj się adresem e-mail, na który przyszło zaproszenie. Zaraz potem dołączysz do obszaru roboczego."
 			},
 			"footer": {
-				"newHere": "Pierwszy raz w Kaneo?",
+				"newHere": "Pierwszy raz w 齐活?",
 				"createAccount": "Utwórz konto",
 				"inviteOnly": "Konta są tutaj dostępne tylko na zaproszenie. Poproś administratora o zaproszenie.",
 				"providerSignUp": "Pierwszy raz tutaj? Zaloguj się przez jednego z dostawców powyżej, aby utworzyć konto.",
@@ -248,7 +248,7 @@
 			"toggleMessage": "Masz już konto?",
 			"toggleLink": "Zaloguj się",
 			"instanceStatusError": "Nie można połączyć się z serwerem. Spróbuj ponownie za chwilę.",
-			"instanceAdminTitle": "Skonfiguruj swoją instancję Kaneo",
+			"instanceAdminTitle": "Skonfiguruj swoją instancję 齐活",
 			"instanceAdminSubtitle": "To konto stanie się administratorem instancji z pełnym dostępem.",
 			"heading": "Utwórz konto",
 			"submitPassword": "Utwórz konto",
@@ -302,7 +302,7 @@
 				"acceptFailed": "Nie udało się zaakceptować zaproszenia",
 				"acceptSuccess": "Zaproszenie zaakceptowane! Witamy w zespole."
 			},
-			"description": "{{inviterName}} zaprasza Cię do tego obszaru roboczego w Kaneo.",
+			"description": "{{inviterName}} zaprasza Cię do tego obszaru roboczego w 齐活.",
 			"invitedBy": "Zaproszenie od",
 			"sentTo": "Wysłane na adres",
 			"signedInAs": "Zalogowano jako",
@@ -310,7 +310,7 @@
 			"notNow": "Nie teraz",
 			"join": "Dołącz do obszaru roboczego",
 			"switchAccount": "Zmień konto",
-			"goToKaneo": "Przejdź do Kaneo",
+			"goToKaneo": "Przejdź do 齐活",
 			"mismatch": {
 				"title": "Zalogowano na inny adres e-mail",
 				"description": "To zaproszenie zostało wysłane na adres {{invitedEmail}}. Zalogowano jako {{email}}."
@@ -329,7 +329,7 @@
 			}
 		},
 		"onboarding": {
-			"pageTitle": "Witamy w Kaneo",
+			"pageTitle": "Witamy w 齐活",
 			"workspaceName": "Nazwa obszaru roboczego",
 			"workspaceNamePlaceholder": "np. Acme Inc, Mój zespół",
 			"toast": {
@@ -379,7 +379,7 @@
 				},
 				"invite": {
 					"title": "Zaproś swój zespół",
-					"description": "Kaneo działa najlepiej, gdy wszyscy są na pokładzie. Otwórz **Członkowie** na pasku bocznym, aby zaprosić osoby przez e-mail."
+					"description": "齐活 działa najlepiej, gdy wszyscy są na pokładzie. Otwórz **Członkowie** na pasku bocznym, aby zaprosić osoby przez e-mail."
 				},
 				"integrations": {
 					"title": "Połącz GitHub, GitLab lub Gitea",
@@ -517,7 +517,7 @@
 		"device": {
 			"connect": {
 				"title": "Połącz urządzenie",
-				"description": "Wpisz kod wyświetlony w terminalu lub aplikacji, aby powiązać je z kontem Kaneo.",
+				"description": "Wpisz kod wyświetlony w terminalu lub aplikacji, aby powiązać je z kontem 齐活.",
 				"label": "Kod urządzenia",
 				"submit": "Dalej",
 				"noCode": "Nie masz jeszcze kodu? Najpierw rozpocznij logowanie w aplikacji.",
@@ -551,7 +551,7 @@
 				"description": "Zaraz potem wrócisz tutaj, aby je zatwierdzić.",
 				"submit": "Zaloguj się"
 			},
-			"openApp": "Open Kaneo"
+			"openApp": "Open 齐活"
 		},
 		"mcp": {
 			"authorize": {
@@ -1216,13 +1216,13 @@
 	"invitations": {
 		"email": {
 			"subject": "{{inviterName}} zaprosił Cię do {{workspaceName}} w {{instanceName}}",
-			"preview": "Masz zaproszenie do {{workspaceName}} w Kaneo",
+			"preview": "Masz zaproszenie do {{workspaceName}} w 齐活",
 			"title": "Dołącz do {{workspaceName}}",
-			"subtitle": "{{inviterName}} ({{inviterEmail}}) zaprosił Cię do współpracy w Kaneo.",
+			"subtitle": "{{inviterName}} ({{inviterEmail}}) zaprosił Cię do współpracy w 齐活.",
 			"cta": "Zaakceptuj zaproszenie",
 			"sameEmail": "Możesz zaakceptować zaproszenie przy użyciu tego samego adresu e-mail, na który wysłano tę wiadomość.",
 			"ignore": "Jeśli nie było to oczekiwane, możesz bezpiecznie zignorować tego e-maila.",
-			"footer": "Zaproszenie do obszaru roboczego Kaneo",
+			"footer": "Zaproszenie do obszaru roboczego 齐活",
 			"details": {
 				"title": "Szczegóły zaproszenia",
 				"sentTo": "Wysłano do",
@@ -1450,7 +1450,7 @@
 		"developer": "Deweloper",
 		"developerPage": {
 			"pageTitle": "Klucze API",
-			"subtitle": "Pozwól skryptom, CLI i klientom MCP korzystać z Kaneo w Twoim imieniu.",
+			"subtitle": "Pozwól skryptom, CLI i klientom MCP korzystać z 齐活 w Twoim imieniu.",
 			"title": "Klucze API",
 			"unnamedKey": "Bez nazwy",
 			"emptyDescription": "Utwórz klucz, aby korzystać z CLI, klienta MCP lub własnych skryptów.",
@@ -1530,11 +1530,11 @@
 				"webhookInvalid": "Wpisz prawidłowy adres URL webhooka",
 				"leadTimeRange": "Wybierz czas od 5 minut do 720 godzin."
 			},
-			"webhookHint": "Kaneo wysyła żądania POST z ładunkiem JSON dla każdego włączonego zdarzenia.",
+			"webhookHint": "齐活 wysyła żądania POST z ładunkiem JSON dla każdego włączonego zdarzenia.",
 			"webhookLabel": "Adres URL punktu końcowego",
 			"webhookPlaceholder": "https://example.com/webhooks/kaneo",
 			"activeTitle": "Wysyłanie zdarzeń",
-			"disconnectDescription": "Kaneo przestanie wysyłać zdarzenia i usunie zapisany punkt końcowy oraz sekret.",
+			"disconnectDescription": "齐活 przestanie wysyłać zdarzenia i usunie zapisany punkt końcowy oraz sekret.",
 			"disconnectTitle": "Rozłączyć webhook?",
 			"reminderLeadTimeAfter": "godz. przed terminem zadania",
 			"reminderLeadTimeBefore": "Wysyłaj przypomnienia"
@@ -1544,12 +1544,12 @@
 			"browseModalHint": "Repozytoria dostępne dla Twojego tokenu.",
 			"browseNeedsCredentials": "Wpisz adres URL Gitea i token, aby przeglądać.",
 			"commentTaskLinkHint": "Aby osoby w Gitea mogły przejść do zadania.",
-			"commentTaskLinkTitle": "Dodawaj komentarz z linkiem Kaneo do nowych zgłoszeń",
+			"commentTaskLinkTitle": "Dodawaj komentarz z linkiem 齐活 do nowych zgłoszeń",
 			"importDisabledHint": "Importowanie wymaga zweryfikowanego dostępu. Sprawdź stan tokenu powyżej.",
 			"importSectionHint": "Zaimportuj otwarte zgłoszenia i pull requesty jako zadania.",
 			"toast": {
 				"commentOnDisabled": "Komentarze z linkiem do zadania przy nowych zgłoszeniach są wyłączone",
-				"commentOnEnabled": "Kaneo doda komentarz z linkiem do zadania przy nowych zgłoszeniach",
+				"commentOnEnabled": "齐活 doda komentarz z linkiem do zadania przy nowych zgłoszeniach",
 				"importError": "Nie udało się zaimportować zgłoszeń",
 				"issuesImported": "Zgłoszenia zaimportowane pomyślnie",
 				"removed": "Usunięto integrację z Gitea",
@@ -1567,20 +1567,20 @@
 				"baseUrlInvalid": "Wpisz prawidłowy adres URL (np. https://gitea.example.com)",
 				"baseUrlRequired": "Bazowy adres URL Gitea jest wymagany"
 			},
-			"webhookHint": "Dodaj ten webhook w ustawieniach repozytorium, aby zmiany wracały do Kaneo.",
+			"webhookHint": "Dodaj ten webhook w ustawieniach repozytorium, aby zmiany wracały do 齐活.",
 			"browseEmpty": "Ten token nie ma dostępu do żadnych repozytoriów.",
 			"chooseRepositoryDescription": "Wpisz owner/name lub wybierz z listy.",
 			"webhookEvents": "Włącz zdarzenia push, pull request, zgłoszeń, komentarzy do zgłoszeń i create."
 		},
 		"githubIntegration": {
 			"commentTaskLinkHint": "Aby osoby na GitHubie mogły przejść do zadania.",
-			"commentTaskLinkTitle": "Dodawaj komentarz z linkiem Kaneo do nowych zgłoszeń",
+			"commentTaskLinkTitle": "Dodawaj komentarz z linkiem 齐活 do nowych zgłoszeń",
 			"importDisabledHint": "Połącz ponownie repozytorium, aby włączyć importowanie.",
 			"importSectionHint": "Zaimportuj otwarte zgłoszenia z repozytorium jako zadania.",
 			"installGithubApp": "Zainstaluj aplikację GitHub",
 			"toast": {
 				"commentOnDisabled": "Komentarze z linkiem do zadania przy nowych zgłoszeniach zostały wyłączone",
-				"commentOnEnabled": "Kaneo doda komentarz z linkiem do zadania przy nowych zgłoszeniach",
+				"commentOnEnabled": "齐活 doda komentarz z linkiem do zadania przy nowych zgłoszeniach",
 				"importError": "Nie udało się zaimportować zgłoszeń",
 				"installAppFirst": "Najpierw zainstaluj aplikację GitHub w tym repozytorium",
 				"issuesImported": "Zgłoszenia zaimportowano pomyślnie",
@@ -1604,9 +1604,9 @@
 			"linkAccountTitle": "Połącz swoje konto GitHub",
 			"linked": "Połączono",
 			"linkGithub": "Połącz GitHub",
-			"verifyMissingPermissions": "Aplikacji GitHub Kaneo brakuje uprawnień: {{list}}.",
-			"verifyNotInstalled": "Aplikacja GitHub Kaneo nie jest zainstalowana w tym repozytorium.",
-			"verifyReady": "Aplikacja GitHub Kaneo jest zainstalowana z wymaganymi uprawnieniami.",
+			"verifyMissingPermissions": "Aplikacji GitHub 齐活 brakuje uprawnień: {{list}}.",
+			"verifyNotInstalled": "Aplikacja GitHub 齐活 nie jest zainstalowana w tym repozytorium.",
+			"verifyReady": "Aplikacja GitHub 齐活 jest zainstalowana z wymaganymi uprawnieniami.",
 			"workflowHint": "Przenoś zadania po otwarciu lub scaleniu pull requestów w sekcji",
 			"workflowLink": "Obieg pracy"
 		},
@@ -1689,7 +1689,7 @@
 			"signingSecret": "Sekret podpisu",
 			"statusConnected": "Połączono",
 			"statusPaused": "Wstrzymano",
-			"subtitle": "O czym Kaneo Cię powiadamia i gdzie.",
+			"subtitle": "O czym 齐活 Cię powiadamia i gdzie.",
 			"title": "Powiadomienia",
 			"toastEmailSaved": "Zapisano ustawienia powiadomień e-mail",
 			"toastEmailSaveFailed": "Nie udało się zapisać ustawień e-mail",
@@ -1717,13 +1717,13 @@
 			"topic": "Temat",
 			"webhookDescription": "Wysyłaj każde powiadomienie do własnego punktu końcowego jako JSON.",
 			"webhookSecretHintConfigured": "Sekret podpisu jest już skonfigurowany ({{masked}}). Wpisz nowy, aby go zastąpić.",
-			"webhookSecretHintOptional": "Kaneo podpisuje treść żądania, gdy ustawiono sekret.",
+			"webhookSecretHintOptional": "齐活 podpisuje treść żądania, gdy ustawiono sekret.",
 			"webhookSecretPlaceholder": "Opcjonalny współdzielony sekret",
 			"webhookTitle": "Niestandardowy webhook",
 			"webhookUrlPlaceholder": "https://example.com/webhooks/kaneo",
 			"channelNotConnected": "Niepołączony",
 			"channelOff": "Wyłączony",
-			"channelsDescription": "Powiadomienia zawsze pojawiają się w Kaneo. Połącz kanał, aby otrzymywać je także gdzie indziej.",
+			"channelsDescription": "Powiadomienia zawsze pojawiają się w 齐活. Połącz kanał, aby otrzymywać je także gdzie indziej.",
 			"channelsTitle": "Kanały",
 			"configure": "Konfiguruj",
 			"configureChannel": "Konfiguruj {{channel}}",
@@ -1739,7 +1739,7 @@
 			"eventStatusChangesHint": "Gdy jedno z Twoich zadań trafi do innej kolumny.",
 			"eventTaskAssignmentsHint": "Gdy ktoś przypisze Ci zadanie.",
 			"loadFailed": "Nie udało się wczytać ustawień powiadomień.",
-			"onlyInKaneo": "Tylko w Kaneo",
+			"onlyInKaneo": "Tylko w 齐活",
 			"optional": "Opcjonalne",
 			"projectCount_few": "{{count}} projekty",
 			"projectCount_many": "{{count}} projektów",
@@ -1771,7 +1771,7 @@
 			"statusSending": "Wysyłanie",
 			"stopping": "Zatrzymywanie...",
 			"stopSending": "Zatrzymaj wysyłanie",
-			"stopSendingDescription": "Powiadomienia z tego obszaru roboczego będą widoczne tylko w Kaneo.",
+			"stopSendingDescription": "Powiadomienia z tego obszaru roboczego będą widoczne tylko w 齐活.",
 			"stopSendingTitle": "Zatrzymać wysyłanie z {{workspaceName}}?",
 			"workspacesDescription": "Wybierz, które obszary robocze i projekty mogą korzystać z Twoich kanałów.",
 			"workspacesTitle": "Obszary robocze"
@@ -1803,7 +1803,7 @@
 			"selectViewMode": "Wybierz tryb wyświetlania",
 			"sidebarDefault": "Pozostaw pasek boczny otwarty",
 			"sidebarDefaultDescription": "Zaczynaj z rozwiniętym paskiem bocznym.",
-			"subtitle": "Jak Kaneo wygląda i działa dla Ciebie.",
+			"subtitle": "Jak 齐活 wygląda i działa dla Ciebie.",
 			"taskNumbers": "Numery zadań",
 			"theme": "Motyw",
 			"themeDark": "Ciemny",
@@ -1941,7 +1941,7 @@
 			"title": "Obieg pracy"
 		},
 		"repositoryBrowser": {
-			"description": "Repozytoria widoczne dla aplikacji GitHub Kaneo.",
+			"description": "Repozytoria widoczne dla aplikacji GitHub 齐活.",
 			"emptyHint": "Zainstaluj aplikację GitHub w swoich repozytoriach, aby zobaczyć je tutaj.",
 			"emptyTitle": "Brak repozytoriów",
 			"installGithubApp": "Zainstaluj aplikację GitHub",
@@ -2499,7 +2499,7 @@
 				"active": "Active",
 				"deactivated": "Deactivated"
 			},
-			"subtitle": "Wszyscy, którzy mają konto w tej instancji Kaneo.",
+			"subtitle": "Wszyscy, którzy mają konto w tej instancji 齐活.",
 			"title": "Użytkownicy",
 			"toast": {
 				"actionError": "Failed to update user status",
@@ -2596,7 +2596,7 @@
 			"sectionTitle": "Logowanie",
 			"submit": "Zmień hasło",
 			"submitting": "Zmienianie...",
-			"subtitle": "Jak logujesz się do Kaneo.",
+			"subtitle": "Jak logujesz się do 齐活.",
 			"title": "Security",
 			"updateError": "Failed to update password.",
 			"updateSuccess": "Password updated.",
@@ -2625,14 +2625,14 @@
 			"browseModalHint": "Projekty, których członkiem jest Twój token.",
 			"browseNeedsCredentials": "Wpisz adres URL GitLab i token, aby przeglądać.",
 			"commentTaskLinkHint": "Aby osoby w GitLabie mogły przejść do zadania.",
-			"commentTaskLinkTitle": "Comment a Kaneo link on issues opened in GitLab",
+			"commentTaskLinkTitle": "Comment a 齐活 link on issues opened in GitLab",
 			"importSectionHint": "Zaimportuj otwarte zgłoszenia i merge requesty jako zadania.",
 			"openInGitlab": "Open {{project}} in GitLab",
 			"projectPathLabel": "Project path",
 			"searchProjects": "Szukaj projektów",
 			"toast": {
 				"commentOnDisabled": "Task link comments on issues opened in GitLab are turned off",
-				"commentOnEnabled": "Kaneo will comment with a task link on issues opened in GitLab",
+				"commentOnEnabled": "齐活 will comment with a task link on issues opened in GitLab",
 				"importError": "Failed to import issues",
 				"issuesImported": "Issues imported successfully",
 				"removed": "GitLab integration removed",
@@ -2654,7 +2654,7 @@
 				"baseUrlRequired": "GitLab base URL is required",
 				"pathInvalid": "Enter the full path, e.g. group/project"
 			},
-			"webhookHint": "Dodaj ten webhook w ustawieniach projektu, aby zmiany wracały do Kaneo.",
+			"webhookHint": "Dodaj ten webhook w ustawieniach projektu, aby zmiany wracały do 齐活.",
 			"loadProjectsError": "Nie udało się wczytać projektów.",
 			"importPermissionHint": "Importing requires permission to create and update tasks.",
 			"browseEmpty": "Ten token nie jest członkiem żadnych projektów.",
@@ -2819,8 +2819,8 @@
 			"filtered": "Only matching labels",
 			"impact": "{{matching}} of {{total}} tasks match. {{create}} tasks will be exported, {{pause}} links will pause, and {{review}} links need review to resume.",
 			"impactTitle": "What will change",
-			"incoming": "Repository → Kaneo",
-			"incomingHint": "Choose which issues can be imported or create tasks. Use exact repository label names. Existing links follow the Kaneo task rule.",
+			"incoming": "Repository → 齐活",
+			"incomingHint": "Choose which issues can be imported or create tasks. Use exact repository label names. Existing links follow the 齐活 task rule.",
 			"loadError": "Sync rules could not be loaded.",
 			"loading": "Loading sync rules…",
 			"matchLabels": "Label matching",
@@ -2830,8 +2830,8 @@
 			"noDescription": "No description",
 			"noLabels": "Create workspace labels before configuring a task filter.",
 			"open": "Open",
-			"outgoing": "Kaneo → repository",
-			"outgoingHint": "Choose which Kaneo tasks can sync. Losing a matching label pauses both directions for an existing task.",
+			"outgoing": "齐活 → repository",
+			"outgoingHint": "Choose which 齐活 tasks can sync. Losing a matching label pauses both directions for an existing task.",
 			"paused": "Sync paused",
 			"pausedHint": "Records and links are preserved. Tasks that match again need review before syncing resumes.",
 			"preserveHint": "Pausing keeps both records and their link. Resuming requires a comparison; historical comments are never replayed.",
@@ -2853,7 +2853,7 @@
 			"sharedHint": "These rules apply to everyone using this project. Hiding advanced settings does not disable them.",
 			"title": "Co jest synchronizowane",
 			"unavailableLabel": "Unavailable label",
-			"useKaneo": "Keep Kaneo values",
+			"useKaneo": "Keep 齐活 values",
 			"useRepository": "Keep repository values",
 			"exportPending": "Export matching tasks",
 			"inactiveHint": "This integration is paused. No tasks will be exported until it is reactivated.",
@@ -2866,12 +2866,12 @@
 			"issuesLabelled": "Zgłoszenia z etykietą",
 			"joinAnd": "i",
 			"joinOr": "lub",
-			"kaneoToProvider": "Z Kaneo do {{provider}}",
+			"kaneoToProvider": "Z 齐活 do {{provider}}",
 			"pausedSummary_few": "{{count}} zadania przestały się synchronizować, ponieważ nie pasują już do reguł synchronizacji.",
 			"pausedSummary_many": "{{count}} zadań przestało się synchronizować, ponieważ nie pasują już do reguł synchronizacji.",
 			"pausedSummary_one": "{{count}} zadanie przestało się synchronizować, ponieważ nie pasuje już do reguł synchronizacji.",
 			"pausedSummary_other": "{{count}} zadania przestało się synchronizować, ponieważ nie pasują już do reguł synchronizacji.",
-			"providerToKaneo": "Z {{provider}} do Kaneo",
+			"providerToKaneo": "Z {{provider}} do 齐活",
 			"reviewPaused": "Przejrzyj",
 			"tasksLabelled": "Zadania z etykietą"
 		},
@@ -2961,7 +2961,7 @@
 			"searchCount_other": "{{count}} matching workspaces",
 			"searchLabel": "Search workspaces",
 			"searchPlaceholder": "Szukaj po nazwie lub slugu",
-			"subtitle": "Wszystkie obszary robocze w tej instancji Kaneo, również te, do których nie należysz.",
+			"subtitle": "Wszystkie obszary robocze w tej instancji 齐活, również te, do których nie należysz.",
 			"title": "Obszary robocze",
 			"toast": {
 				"added": "Member added",
@@ -2996,7 +2996,7 @@
 				"cancel": "Cancel",
 				"continue": "Continue",
 				"hideSecret": "Hide {{field}}",
-				"sectionDescription": "Kaneo only reads from {{source}}. The key is used for this import and never stored.",
+				"sectionDescription": "齐活 only reads from {{source}}. The key is used for this import and never stored.",
 				"sectionTitle": "Connect",
 				"showSecret": "Show {{field}}",
 				"title": "Import from {{source}}",
@@ -3172,7 +3172,7 @@
 				"import": "Import",
 				"label": "Import steps"
 			},
-			"subtitle": "Bring your projects from another tool into {{workspace}}. Kaneo only reads from the source.",
+			"subtitle": "Bring your projects from another tool into {{workspace}}. 齐活 only reads from the source.",
 			"title": "Import",
 			"toast": {
 				"failed": "Import from {{source}} failed",
@@ -3309,7 +3309,7 @@
 			"channelLabel": "Kanał",
 			"channelPlaceholder": "#team-updates",
 			"disconnect": "Rozłącz",
-			"disconnectDescription": "Kaneo przestanie publikować w {{provider}} i usunie zapisane ustawienia.",
+			"disconnectDescription": "齐活 przestanie publikować w {{provider}} i usunie zapisane ustawienia.",
 			"disconnecting": "Rozłączanie…",
 			"disconnectTitle": "Rozłączyć {{provider}}?",
 			"events": {

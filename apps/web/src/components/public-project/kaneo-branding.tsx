@@ -11,7 +11,7 @@ export function KaneoBranding() {
       className="hover:text-foreground transition-colors"
     >
       {t("publicProject:branding.poweredBy")}{" "}
-      <span className="font-medium">{t("common:appName")}</span>
+      <span className="font-medium">Kaneo</span>
     </a>
   );
 }

@@ -48,14 +48,14 @@ export type WorkspaceInvitationEmailCopy = {
 const DEFAULT_COPY: WorkspaceInvitationEmailCopy = {
   subject:
     "{{inviterName}} invited you to join {{workspaceName}} on {{instanceName}}",
-  preview: "You're invited to {{workspaceName}} on Kaneo",
+  preview: "You're invited to {{workspaceName}} on 齐活",
   title: "Join {{workspaceName}}",
   subtitle:
-    "{{inviterName}} ({{inviterEmail}}) invited you to collaborate in Kaneo.",
+    "{{inviterName}} ({{inviterEmail}}) invited you to collaborate in 齐活.",
   cta: "Accept invitation",
   sameEmail: "You can accept with the same email that received this message.",
   ignore: "If this wasn't expected, you can safely ignore this email.",
-  footer: "Kaneo workspace invitation",
+  footer: "齐活 workspace invitation",
   details: {
     title: "Invitation details",
     sentTo: "Sent to",
