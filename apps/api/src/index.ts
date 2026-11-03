@@ -33,6 +33,7 @@ import column from "./column";
 import comment from "./comment";
 import config from "./config";
 import customField from "./custom-field";
+import dashboard from "./dashboard";
 import db, { getDatabase, schema } from "./database";
 import { apiErrorSchema } from "./errors/api-error-schema";
 import { httpExceptionResponse } from "./errors/http-exception-response";
@@ -60,11 +61,13 @@ import { stopActiveImports } from "./import/runs/stop-active-imports";
 import getInstanceStatus from "./instance/controllers/get-instance-status";
 import invitation from "./invitation";
 import label from "./label";
+import leaderBoard from "./leader-board";
 import mattermostIntegration from "./mattermost-integration";
 import mcpRoutes, { mcpWellKnownRoutes } from "./mcp";
 import { migrateColumns } from "./migrations/column-migration";
 import notification from "./notification";
 import notificationPreferences from "./notification-preferences";
+import orgUnit from "./org-unit";
 import oauth from "./oauth";
 import { createRoute, errorResponse, jsonResponse, z } from "./openapi";
 import { initializePlugins, integrationPlugins } from "./plugins";
@@ -875,6 +878,9 @@ export function createApp() {
   const importApi = api.route("/import", importRoutes);
   const userApi = api.route("/user", user);
   const adminApi = api.route("/admin", admin);
+  const orgUnitApi = api.route("/org-unit", orgUnit);
+  const leaderBoardApi = api.route("/leader-board", leaderBoard);
+  const dashboardApi = api.route("/dashboard", dashboard);
 
   app.route(
     "/",
@@ -1014,6 +1020,9 @@ export function createApp() {
     workflowRuleApi,
     workspaceApi,
     customFieldApi,
+    orgUnitApi,
+    leaderBoardApi,
+    dashboardApi,
     importApi,
     oauthApi,
   };
@@ -1149,6 +1158,9 @@ const {
   workflowRuleApi,
   workspaceApi,
   customFieldApi,
+  orgUnitApi,
+  leaderBoardApi,
+  dashboardApi,
   importApi,
   oauthApi,
 } = createdApp;
@@ -1192,6 +1204,9 @@ export type AppType =
   | typeof invitationApi
   | typeof workspaceApi
   | typeof customFieldApi
+  | typeof orgUnitApi
+  | typeof leaderBoardApi
+  | typeof dashboardApi
   | typeof importApi
   | typeof userApi
   | typeof adminApi
