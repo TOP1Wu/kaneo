@@ -1,3 +1,3 @@
 import { createContext } from "react";
 
-export const BrandNameContext = createContext("Kaneo");
+export const BrandNameContext = createContext("齐活");

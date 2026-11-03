@@ -1,6 +1,6 @@
 {
 	"common": {
-		"appName": "Kaneo",
+		"appName": "齐活",
 		"actions": {
 			"cancel": "Отмена",
 			"close": "Закрыть",
@@ -96,7 +96,7 @@
 				"errorToast": "Не удалось создать проект"
 			},
 			"createWorkspace": {
-				"breadcrumbKaneo": "KANEO",
+				"breadcrumbKaneo": "齐活",
 				"title": "Создать новую рабочую область",
 				"description": "Создайте новую рабочую область, указав её название.",
 				"namePlaceholder": "Название рабочей области",
@@ -185,7 +185,7 @@
 				"use_a_permanent_email_address_disposable_addresses_cannot_create_accounts_": "Используйте постоянный адрес электронной почты. С одноразовыми адресами создать аккаунт нельзя."
 			},
 			"instanceStatusError": "Не удалось связаться с сервером. Повторите попытку чуть позже.",
-			"heading": "Вход в Kaneo",
+			"heading": "Вход в 齐活",
 			"submitPassword": "Войти",
 			"invitation": {
 				"title": "{{inviterName}} приглашает вас в {{workspaceName}}",
@@ -193,7 +193,7 @@
 				"description": "Войдите с адресом электронной почты, на который пришло приглашение. Сразу после этого вы присоединитесь к рабочей области."
 			},
 			"footer": {
-				"newHere": "Впервые в Kaneo?",
+				"newHere": "Впервые в 齐活?",
 				"createAccount": "Создать аккаунт",
 				"inviteOnly": "Аккаунты здесь создаются только по приглашению. Попросите приглашение у администратора.",
 				"providerSignUp": "Впервые здесь? Войдите через одного из провайдеров выше, чтобы создать аккаунт.",
@@ -248,7 +248,7 @@
 			"toggleMessage": "Уже есть аккаунт?",
 			"toggleLink": "Войти",
 			"instanceStatusError": "Не удалось связаться с сервером. Повторите попытку чуть позже.",
-			"instanceAdminTitle": "Настройте свой экземпляр Kaneo",
+			"instanceAdminTitle": "Настройте свой экземпляр 齐活",
 			"instanceAdminSubtitle": "Этот аккаунт станет администратором экземпляра с полным доступом.",
 			"heading": "Создайте аккаунт",
 			"submitPassword": "Создать аккаунт",
@@ -302,7 +302,7 @@
 				"acceptFailed": "Не удалось принять приглашение",
 				"acceptSuccess": "Приглашение принято! Добро пожаловать в команду."
 			},
-			"description": "{{inviterName}} приглашает вас в эту рабочую область в Kaneo.",
+			"description": "{{inviterName}} приглашает вас в эту рабочую область в 齐活.",
 			"invitedBy": "Приглашение от",
 			"sentTo": "Отправлено на",
 			"signedInAs": "Вы вошли как",
@@ -310,7 +310,7 @@
 			"notNow": "Не сейчас",
 			"join": "Присоединиться к рабочей области",
 			"switchAccount": "Сменить аккаунт",
-			"goToKaneo": "Перейти в Kaneo",
+			"goToKaneo": "Перейти в 齐活",
 			"mismatch": {
 				"title": "Вы вошли с другим адресом",
 				"description": "Это приглашение отправлено на {{invitedEmail}}. Вы вошли как {{email}}."
@@ -329,7 +329,7 @@
 			}
 		},
 		"onboarding": {
-			"pageTitle": "Добро пожаловать в Kaneo",
+			"pageTitle": "Добро пожаловать в 齐活",
 			"workspaceName": "Название рабочей области",
 			"workspaceNamePlaceholder": "например, Acme Inc, Моя команда",
 			"toast": {
@@ -379,7 +379,7 @@
 				},
 				"invite": {
 					"title": "Пригласите команду",
-					"description": "Kaneo лучше всего работает, когда в нём вся команда. Откройте **Участники** на боковой панели, чтобы пригласить людей по email."
+					"description": "齐活 лучше всего работает, когда в нём вся команда. Откройте **Участники** на боковой панели, чтобы пригласить людей по email."
 				},
 				"integrations": {
 					"title": "Подключите GitHub, GitLab или Gitea",
@@ -517,7 +517,7 @@
 		"device": {
 			"connect": {
 				"title": "Подключение устройства",
-				"description": "Введите код из терминала или приложения, чтобы привязать его к аккаунту Kaneo.",
+				"description": "Введите код из терминала или приложения, чтобы привязать его к аккаунту 齐活.",
 				"label": "Код устройства",
 				"submit": "Продолжить",
 				"noCode": "Ещё нет кода? Сначала начните вход в приложении.",
@@ -551,7 +551,7 @@
 				"description": "Сразу после входа вы вернётесь сюда, чтобы подтвердить его.",
 				"submit": "Войти"
 			},
-			"openApp": "Open Kaneo"
+			"openApp": "Open 齐活"
 		},
 		"mcp": {
 			"authorize": {
@@ -624,7 +624,7 @@
 		"notificationsPage": {
 			"pageTitle": "Уведомления",
 			"title": "Уведомления",
-			"subtitle": "О чём Kaneo вам сообщает и куда.",
+			"subtitle": "О чём 齐活 вам сообщает и куда.",
 			"statusConnected": "Подключено",
 			"statusPaused": "Приостановлено",
 			"emailTitle": "Электронная почта",
@@ -657,7 +657,7 @@
 			"webhookUrlPlaceholder": "https://example.com/webhooks/kaneo",
 			"webhookSecretPlaceholder": "Необязательный общий секрет",
 			"webhookSecretHintConfigured": "Секрет подписи уже настроен ({{masked}}). Введите новый для замены.",
-			"webhookSecretHintOptional": "Kaneo подписывает тело запроса, если задан секрет.",
+			"webhookSecretHintOptional": "齐活 подписывает тело запроса, если задан секрет.",
 			"connectWebhook": "Подключить вебхук",
 			"allProjects": "Все проекты",
 			"noProjectsInWorkspace": "В этой рабочей области пока нет проектов.",
@@ -695,7 +695,7 @@
 			"saveEventPreferences": "Сохранить типы уведомлений",
 			"channelNotConnected": "Не подключён",
 			"channelOff": "Выкл.",
-			"channelsDescription": "Уведомления всегда отображаются в Kaneo. Подключите канал, чтобы получать их и в другом месте.",
+			"channelsDescription": "Уведомления всегда отображаются в 齐活. Подключите канал, чтобы получать их и в другом месте.",
 			"channelsTitle": "Каналы",
 			"configure": "Настроить",
 			"configureChannel": "Настроить {{channel}}",
@@ -711,7 +711,7 @@
 			"eventStatusChangesHint": "Когда одна из ваших задач перемещается в другую колонку.",
 			"eventTaskAssignmentsHint": "Когда кто-то назначает вам задачу.",
 			"loadFailed": "Не удалось загрузить настройки уведомлений.",
-			"onlyInKaneo": "Только в Kaneo",
+			"onlyInKaneo": "Только в 齐活",
 			"optional": "Необязательно",
 			"projectCount_few": "{{count}} проекта",
 			"projectCount_many": "{{count}} проектов",
@@ -743,14 +743,14 @@
 			"statusSending": "Отправка",
 			"stopping": "Остановка...",
 			"stopSending": "Остановить отправку",
-			"stopSendingDescription": "Уведомления из этой рабочей области будут отображаться только в Kaneo.",
+			"stopSendingDescription": "Уведомления из этой рабочей области будут отображаться только в 齐活.",
 			"stopSendingTitle": "Остановить отправку из {{workspaceName}}?",
 			"workspacesDescription": "Выберите, какие рабочие области и проекты могут использовать ваши каналы.",
 			"workspacesTitle": "Рабочие области"
 		},
 		"preferencesPage": {
 			"title": "Настройки",
-			"subtitle": "Как Kaneo выглядит и работает для вас.",
+			"subtitle": "Как 齐活 выглядит и работает для вас.",
 			"appearanceTitle": "Основные",
 			"theme": "Тема",
 			"selectTheme": "Выберите тему",
@@ -795,7 +795,7 @@
 		"developerPage": {
 			"pageTitle": "API-ключи",
 			"title": "API-ключи",
-			"subtitle": "Позвольте скриптам, CLI и MCP-клиентам работать с Kaneo от вашего имени.",
+			"subtitle": "Позвольте скриптам, CLI и MCP-клиентам работать с 齐活 от вашего имени.",
 			"unnamedKey": "Без названия",
 			"emptyDescription": "Создайте ключ, чтобы использовать CLI, MCP-клиент или собственные скрипты.",
 			"emptyTitle": "API-ключей пока нет",
@@ -1039,11 +1039,11 @@
 				"removeError": "Не удалось удалить интеграцию с GitHub",
 				"issuesImported": "Issues успешно импортированы",
 				"importError": "Не удалось импортировать issues",
-				"commentOnEnabled": "Kaneo будет комментировать новые issues ссылкой на задачу",
+				"commentOnEnabled": "齐活 будет комментировать новые issues ссылкой на задачу",
 				"commentOnDisabled": "Комментарии со ссылками на задачи в новых issues отключены",
 				"settingsUpdateError": "Не удалось обновить интеграцию с GitHub"
 			},
-			"commentTaskLinkTitle": "Оставлять ссылку Kaneo в комментарии к новым issues",
+			"commentTaskLinkTitle": "Оставлять ссылку 齐活 в комментарии к новым issues",
 			"commentTaskLinkHint": "Чтобы на GitHub можно было сразу перейти к задаче.",
 			"updatePermissions": "Обновить права",
 			"installGithubApp": "Установить GitHub App",
@@ -1060,9 +1060,9 @@
 			"linkAccountTitle": "Привяжите аккаунт GitHub",
 			"linked": "Привязан",
 			"linkGithub": "Привязать GitHub",
-			"verifyMissingPermissions": "У GitHub App Kaneo не хватает прав: {{list}}.",
-			"verifyNotInstalled": "GitHub App Kaneo не установлен в этом репозитории.",
-			"verifyReady": "GitHub App Kaneo установлен со всеми нужными правами.",
+			"verifyMissingPermissions": "У GitHub App 齐活 не хватает прав: {{list}}.",
+			"verifyNotInstalled": "GitHub App 齐活 не установлен в этом репозитории.",
+			"verifyReady": "GitHub App 齐活 установлен со всеми нужными правами.",
 			"workflowHint": "Перемещение задач при открытии или слиянии pull requests настраивается в разделе",
 			"workflowLink": "Рабочий процесс"
 		},
@@ -1080,13 +1080,13 @@
 				"removeError": "Не удалось удалить интеграцию с Gitea",
 				"issuesImported": "Issues успешно импортированы",
 				"importError": "Не удалось импортировать issues",
-				"commentOnEnabled": "Kaneo будет комментировать новые issues ссылкой на задачу",
+				"commentOnEnabled": "齐活 будет комментировать новые issues ссылкой на задачу",
 				"commentOnDisabled": "Комментарии со ссылками на задачи в новых issues отключены",
 				"settingsUpdateError": "Не удалось обновить интеграцию с Gitea"
 			},
-			"commentTaskLinkTitle": "Оставлять ссылку Kaneo в комментарии к новым issues",
+			"commentTaskLinkTitle": "Оставлять ссылку 齐活 в комментарии к новым issues",
 			"commentTaskLinkHint": "Чтобы в Gitea можно было сразу перейти к задаче.",
-			"webhookHint": "Добавьте этот вебхук в настройках репозитория, чтобы изменения возвращались в Kaneo.",
+			"webhookHint": "Добавьте этот вебхук в настройках репозитория, чтобы изменения возвращались в 齐活.",
 			"baseUrlLabel": "URL Gitea",
 			"tokenLabel": "Персональный токен доступа",
 			"tokenPlaceholder": "Вставьте токен",
@@ -1151,7 +1151,7 @@
 			},
 			"webhookLabel": "URL эндпоинта",
 			"webhookPlaceholder": "https://example.com/webhooks/kaneo",
-			"webhookHint": "Kaneo отправляет POST-запросы с JSON-данными для каждого включённого события.",
+			"webhookHint": "齐活 отправляет POST-запросы с JSON-данными для каждого включённого события.",
 			"secretLabel": "Секрет подписи",
 			"secretPlaceholder": "Общий секрет",
 			"secretHint": "Kaneo подписывает им каждый запрос и отправляет дайджест в заголовке X-Kaneo-Signature.",
@@ -1175,7 +1175,7 @@
 			"connect": "Подключить вебхук",
 			"reminderLeadTimeLabel": "Количество часов до срока задачи",
 			"activeTitle": "Отправка событий",
-			"disconnectDescription": "Kaneo перестанет отправлять события и удалит сохранённые эндпоинт и секрет.",
+			"disconnectDescription": "齐活 перестанет отправлять события и удалит сохранённые эндпоинт и секрет.",
 			"disconnectTitle": "Отключить вебхук?",
 			"reminderLeadTimeAfter": "ч до срока задачи",
 			"reminderLeadTimeBefore": "Отправлять напоминания за"
@@ -1211,7 +1211,7 @@
 		},
 		"repositoryBrowser": {
 			"title": "Выберите репозиторий",
-			"description": "Репозитории, которые видит GitHub App Kaneo.",
+			"description": "Репозитории, которые видит GitHub App 齐活.",
 			"searchPlaceholder": "Поиск репозиториев",
 			"loadError": "Не удалось загрузить репозитории.",
 			"tryAgain": "Повторить",
@@ -1706,7 +1706,7 @@
 				"active": "Active",
 				"deactivated": "Deactivated"
 			},
-			"subtitle": "Все, у кого есть аккаунт в этом экземпляре Kaneo.",
+			"subtitle": "Все, у кого есть аккаунт в этом экземпляре 齐活.",
 			"title": "Пользователи",
 			"toast": {
 				"actionError": "Failed to update user status",
@@ -1803,7 +1803,7 @@
 			"sectionTitle": "Вход",
 			"submit": "Сменить пароль",
 			"submitting": "Смена...",
-			"subtitle": "Как вы входите в Kaneo.",
+			"subtitle": "Как вы входите в 齐活.",
 			"title": "Security",
 			"updateError": "Failed to update password.",
 			"updateSuccess": "Password updated.",
@@ -1832,7 +1832,7 @@
 			"browseModalHint": "Проекты, в которых состоит ваш токен.",
 			"browseNeedsCredentials": "Введите URL GitLab и токен, чтобы просмотреть список.",
 			"commentTaskLinkHint": "Чтобы в GitLab можно было сразу перейти к задаче.",
-			"commentTaskLinkTitle": "Комментировать ссылкой Kaneo issues, созданные в GitLab",
+			"commentTaskLinkTitle": "Комментировать ссылкой 齐活 issues, созданные в GitLab",
 			"importSectionHint": "Импортируйте открытые issues и merge requests как задачи.",
 			"loadProjectsError": "Не удалось загрузить проекты.",
 			"openInGitlab": "Открыть {{project}} в GitLab",
@@ -1840,7 +1840,7 @@
 			"searchProjects": "Поиск проектов",
 			"toast": {
 				"commentOnDisabled": "Комментарии со ссылкой на задачу в issues из GitLab отключены",
-				"commentOnEnabled": "Kaneo будет оставлять ссылку на задачу в issues, созданных в GitLab",
+				"commentOnEnabled": "齐活 будет оставлять ссылку на задачу в issues, созданных в GitLab",
 				"importError": "Не удалось импортировать issues",
 				"issuesImported": "Issues успешно импортированы",
 				"removed": "Интеграция с GitLab удалена",
@@ -1862,7 +1862,7 @@
 				"baseUrlRequired": "URL GitLab обязателен",
 				"pathInvalid": "Введите полный путь, например group/project"
 			},
-			"webhookHint": "Добавьте этот вебхук в настройках проекта, чтобы изменения возвращались в Kaneo.",
+			"webhookHint": "Добавьте этот вебхук в настройках проекта, чтобы изменения возвращались в 齐活.",
 			"importPermissionHint": "Importing requires permission to create and update tasks.",
 			"browseEmpty": "Этот токен не состоит ни в одном проекте.",
 			"chooseProjectDescription": "Введите его путь или выберите из списка.",
@@ -2026,8 +2026,8 @@
 			"filtered": "Only matching labels",
 			"impact": "{{matching}} of {{total}} tasks match. {{create}} tasks will be exported, {{pause}} links will pause, and {{review}} links need review to resume.",
 			"impactTitle": "What will change",
-			"incoming": "Repository → Kaneo",
-			"incomingHint": "Choose which issues can be imported or create tasks. Use exact repository label names. Existing links follow the Kaneo task rule.",
+			"incoming": "Repository → 齐活",
+			"incomingHint": "Choose which issues can be imported or create tasks. Use exact repository label names. Existing links follow the 齐活 task rule.",
 			"loadError": "Sync rules could not be loaded.",
 			"loading": "Loading sync rules…",
 			"matchLabels": "Label matching",
@@ -2037,8 +2037,8 @@
 			"noDescription": "No description",
 			"noLabels": "Create workspace labels before configuring a task filter.",
 			"open": "Open",
-			"outgoing": "Kaneo → repository",
-			"outgoingHint": "Choose which Kaneo tasks can sync. Losing a matching label pauses both directions for an existing task.",
+			"outgoing": "齐活 → repository",
+			"outgoingHint": "Choose which 齐活 tasks can sync. Losing a matching label pauses both directions for an existing task.",
 			"paused": "Sync paused",
 			"pausedHint": "Records and links are preserved. Tasks that match again need review before syncing resumes.",
 			"preserveHint": "Pausing keeps both records and their link. Resuming requires a comparison; historical comments are never replayed.",
@@ -2060,7 +2060,7 @@
 			"sharedHint": "These rules apply to everyone using this project. Hiding advanced settings does not disable them.",
 			"title": "Что синхронизируется",
 			"unavailableLabel": "Unavailable label",
-			"useKaneo": "Keep Kaneo values",
+			"useKaneo": "Keep 齐活 values",
 			"useRepository": "Keep repository values",
 			"exportPending": "Export matching tasks",
 			"inactiveHint": "This integration is paused. No tasks will be exported until it is reactivated.",
@@ -2073,12 +2073,12 @@
 			"issuesLabelled": "Issues с меткой",
 			"joinAnd": "и",
 			"joinOr": "или",
-			"kaneoToProvider": "Из Kaneo в {{provider}}",
+			"kaneoToProvider": "Из 齐活 в {{provider}}",
 			"pausedSummary_few": "{{count}} задачи перестали синхронизироваться, так как больше не соответствуют правилам синхронизации.",
 			"pausedSummary_many": "{{count}} задач перестали синхронизироваться, так как больше не соответствуют правилам синхронизации.",
 			"pausedSummary_one": "{{count}} задача перестала синхронизироваться, так как больше не соответствует правилам синхронизации.",
 			"pausedSummary_other": "{{count}} задачи перестали синхронизироваться, так как больше не соответствуют правилам синхронизации.",
-			"providerToKaneo": "Из {{provider}} в Kaneo",
+			"providerToKaneo": "Из {{provider}} в 齐活",
 			"reviewPaused": "Просмотреть",
 			"tasksLabelled": "Задачи с меткой"
 		},
@@ -2168,7 +2168,7 @@
 			"searchCount_other": "{{count}} matching workspaces",
 			"searchLabel": "Search workspaces",
 			"searchPlaceholder": "Поиск по названию или slug",
-			"subtitle": "Все рабочие области этого экземпляра Kaneo, включая те, в которых вы не состоите.",
+			"subtitle": "Все рабочие области этого экземпляра 齐活, включая те, в которых вы не состоите.",
 			"title": "Рабочие области",
 			"toast": {
 				"added": "Member added",
@@ -2203,7 +2203,7 @@
 				"cancel": "Cancel",
 				"continue": "Continue",
 				"hideSecret": "Hide {{field}}",
-				"sectionDescription": "Kaneo only reads from {{source}}. The key is used for this import and never stored.",
+				"sectionDescription": "齐活 only reads from {{source}}. The key is used for this import and never stored.",
 				"sectionTitle": "Connect",
 				"showSecret": "Show {{field}}",
 				"title": "Import from {{source}}",
@@ -2379,7 +2379,7 @@
 				"import": "Import",
 				"label": "Import steps"
 			},
-			"subtitle": "Bring your projects from another tool into {{workspace}}. Kaneo only reads from the source.",
+			"subtitle": "Bring your projects from another tool into {{workspace}}. 齐活 only reads from the source.",
 			"title": "Import",
 			"toast": {
 				"failed": "Import from {{source}} failed",
@@ -2516,7 +2516,7 @@
 			"channelLabel": "Канал",
 			"channelPlaceholder": "#team-updates",
 			"disconnect": "Отключить",
-			"disconnectDescription": "Kaneo перестанет публиковать в {{provider}} и удалит сохранённые настройки.",
+			"disconnectDescription": "齐活 перестанет публиковать в {{provider}} и удалит сохранённые настройки.",
 			"disconnecting": "Отключение…",
 			"disconnectTitle": "Отключить {{provider}}?",
 			"events": {
@@ -4108,13 +4108,13 @@
 	"invitations": {
 		"email": {
 			"subject": "{{inviterName}} приглашает вас присоединиться к {{workspaceName}} в {{instanceName}}",
-			"preview": "Вас пригласили в {{workspaceName}} в Kaneo",
+			"preview": "Вас пригласили в {{workspaceName}} в 齐活",
 			"title": "Присоединяйтесь к {{workspaceName}}",
-			"subtitle": "{{inviterName}} ({{inviterEmail}}) приглашает вас к совместной работе в Kaneo.",
+			"subtitle": "{{inviterName}} ({{inviterEmail}}) приглашает вас к совместной работе в 齐活.",
 			"cta": "Принять приглашение",
 			"sameEmail": "Вы можете принять приглашение с того же адреса электронной почты, на который пришло это письмо.",
 			"ignore": "Если вы не ожидали этого письма, просто проигнорируйте его.",
-			"footer": "Приглашение в рабочую область Kaneo",
+			"footer": "Приглашение в рабочую область 齐活",
 			"details": {
 				"title": "Сведения о приглашении",
 				"sentTo": "Отправлено на",

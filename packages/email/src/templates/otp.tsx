@@ -25,67 +25,67 @@ const minutes = OTP_EXPIRY_SECONDS / 60;
 const messages = {
   en: {
     preview: `Enter it on the sign-in page to continue. It expires in ${minutes} minutes.`,
-    title: "Sign in to Kaneo",
+    title: "Sign in to 齐活",
     subtitle:
       "Enter this code on the sign-in page to finish signing in. It works once.",
     codeLabel: "Verification code",
-    code: "is your Kaneo verification code.",
+    code: "is your 齐活 verification code.",
     expiry: `This code expires in ${minutes} minutes.`,
     ignoreTitle: "Didn't try to sign in?",
     ignore:
-      "You can ignore this email. Nobody can get into your account without this code. Kaneo will never ask you to share it.",
-    footer: "Kaneo security email",
+      "You can ignore this email. Nobody can get into your account without this code. 齐活 will never ask you to share it.",
+    footer: "齐活 security email",
   },
   de: {
     preview: `Gib ihn auf der Anmeldeseite ein, um fortzufahren. Er läuft in ${minutes} Minuten ab.`,
-    title: "Bei Kaneo anmelden",
+    title: "Bei 齐活 anmelden",
     subtitle:
       "Gib diesen Code auf der Anmeldeseite ein, um die Anmeldung abzuschließen. Er funktioniert nur einmal.",
     codeLabel: "Bestätigungscode",
-    code: "ist dein Kaneo Bestätigungscode.",
+    code: "ist dein 齐活 Bestätigungscode.",
     expiry: `Dieser Code läuft in ${minutes} Minuten ab.`,
     ignoreTitle: "Du wolltest dich nicht anmelden?",
     ignore:
-      "Dann kannst du diese E-Mail ignorieren. Ohne diesen Code kommt niemand in dein Konto. Kaneo wird dich nie bitten, ihn weiterzugeben.",
-    footer: "Kaneo Sicherheits-E-Mail",
+      "Dann kannst du diese E-Mail ignorieren. Ohne diesen Code kommt niemand in dein Konto. 齐活 wird dich nie bitten, ihn weiterzugeben.",
+    footer: "齐活 Sicherheits-E-Mail",
   },
   vi: {
     preview: `Nhập mã này trên trang đăng nhập để tiếp tục. Mã hết hạn sau ${minutes} phút.`,
-    title: "Đăng nhập vào Kaneo",
+    title: "Đăng nhập vào 齐活",
     subtitle:
       "Nhập mã này trên trang đăng nhập để hoàn tất đăng nhập. Mã chỉ dùng được một lần.",
     codeLabel: "Mã xác minh",
-    code: "là mã xác minh Kaneo của bạn.",
+    code: "là mã xác minh 齐活 của bạn.",
     expiry: `Mã này sẽ hết hạn sau ${minutes} phút.`,
     ignoreTitle: "Bạn không định đăng nhập?",
     ignore:
-      "Bạn có thể bỏ qua email này. Không ai có thể vào tài khoản của bạn nếu không có mã này. Kaneo sẽ không bao giờ yêu cầu bạn chia sẻ mã.",
-    footer: "Email bảo mật Kaneo",
+      "Bạn có thể bỏ qua email này. Không ai có thể vào tài khoản của bạn nếu không có mã này. 齐活 sẽ không bao giờ yêu cầu bạn chia sẻ mã.",
+    footer: "Email bảo mật 齐活",
   },
   ja: {
     preview: `サインインページで入力して続行してください。有効期限は${minutes}分です。`,
-    title: "Kaneo にサインイン",
+    title: "齐活 にサインイン",
     subtitle:
       "サインインページでこのコードを入力して、サインインを完了してください。コードは1回のみ有効です。",
     codeLabel: "確認コード",
-    code: "はあなたの Kaneo 確認コードです。",
+    code: "はあなたの 齐活 確認コードです。",
     expiry: `このコードの有効期限は${minutes}分です。`,
     ignoreTitle: "サインインしようとしていませんか？",
     ignore:
-      "このメールは無視してかまいません。このコードがなければ、誰もあなたのアカウントにアクセスできません。Kaneo がコードの共有を求めることはありません。",
-    footer: "Kaneo セキュリティメール",
+      "このメールは無視してかまいません。このコードがなければ、誰もあなたのアカウントにアクセスできません。齐活 がコードの共有を求めることはありません。",
+    footer: "齐活 セキュリティメール",
   },
   "zh-tw": {
     preview: `在登入頁面輸入以繼續。驗證碼將在 ${minutes} 分鐘後失效。`,
-    title: "登入 Kaneo",
+    title: "登入 齐活",
     subtitle: "在登入頁面輸入此驗證碼以完成登入。驗證碼只能使用一次。",
     codeLabel: "驗證碼",
-    code: "是你的 Kaneo 驗證碼。",
+    code: "是你的 齐活 驗證碼。",
     expiry: `此驗證碼將在 ${minutes} 分鐘後失效。`,
     ignoreTitle: "沒有嘗試登入？",
     ignore:
-      "你可以忽略這封郵件。沒有這組驗證碼，任何人都無法進入你的帳號。Kaneo 絕不會要求你分享驗證碼。",
-    footer: "Kaneo 安全性通知",
+      "你可以忽略這封郵件。沒有這組驗證碼，任何人都無法進入你的帳號。齐活 絕不會要求你分享驗證碼。",
+    footer: "齐活 安全性通知",
   },
 } as const;
 

@@ -16,7 +16,7 @@ describe("AccountPasswordEmail", () => {
         instance: "kaneo.example",
       }),
     );
-    expect(html).toContain("Set up your Kaneo account");
+    expect(html).toContain("Set up your 齐活 account");
     expect(html).toContain("expires in 2 days");
     expect(html).toContain("an administrator of kaneo.example");
     expect(html).not.toContain("Reset");

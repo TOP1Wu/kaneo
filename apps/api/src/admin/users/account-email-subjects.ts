@@ -33,7 +33,7 @@ const subjects = {
 export function accountEmailSubject(
   kind: keyof Subjects,
   locale: string | null,
-  instanceName = "Kaneo",
+  instanceName = "齐活",
 ) {
   const normalized = locale?.toLowerCase() ?? "";
   const key = normalized === "zh-tw" ? normalized : normalized.split("-")[0];

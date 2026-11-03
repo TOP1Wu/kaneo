@@ -4,7 +4,7 @@ export function getInvitationEmailSubject(
   locale: string | null,
   inviterName: string,
   workspaceName: string,
-  instanceName = "Kaneo",
+  instanceName = "齐活",
 ) {
   const values: Record<string, string> = {
     inviterName,

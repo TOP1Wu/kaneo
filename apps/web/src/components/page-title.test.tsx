@@ -5,12 +5,12 @@ import PageTitle from "./page-title";
 
 describe("PageTitle", () => {
   beforeEach(() => {
-    document.title = "Kaneo";
+    document.title = "齐活";
   });
 
   afterEach(() => {
     cleanup();
-    useInstanceNameStore.setState({ instanceName: "Kaneo" });
+    useInstanceNameStore.setState({ instanceName: "齐活" });
   });
 
   it("uses the custom instance name and restores the fallback on unmount", () => {
@@ -18,7 +18,7 @@ describe("PageTitle", () => {
     const { unmount } = render(<PageTitle title="Settings" />);
     expect(document.title).toBe("Settings | Acme");
     unmount();
-    expect(document.title).toBe("Kaneo");
+    expect(document.title).toBe("齐活");
   });
 
   it("sets the document title", () => {
@@ -28,7 +28,7 @@ describe("PageTitle", () => {
 
   it("keeps the fallback title while the title is still loading", () => {
     const { rerender } = render(<PageTitle title={undefined} />);
-    expect(document.title).toBe("Kaneo");
+    expect(document.title).toBe("齐活");
 
     rerender(<PageTitle title="Website / Board" />);
     expect(document.title).toBe("Website / Board");
@@ -37,6 +37,6 @@ describe("PageTitle", () => {
   it("restores the fallback title when the page unmounts", () => {
     const { unmount } = render(<PageTitle title="Inbox" />);
     unmount();
-    expect(document.title).toBe("Kaneo");
+    expect(document.title).toBe("齐活");
   });
 });

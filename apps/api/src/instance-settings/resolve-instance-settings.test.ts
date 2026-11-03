@@ -31,7 +31,7 @@ describe("resolveInstanceSettings", () => {
       DISABLE_WORKSPACE_CREATION: "true",
     });
     expect(resolved).toMatchObject({
-      instanceName: "Kaneo",
+      instanceName: "齐活",
       registrationEnabled: false,
       passwordRegistrationEnabled: false,
       workspaceCreationRestricted: true,

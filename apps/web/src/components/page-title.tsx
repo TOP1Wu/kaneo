@@ -6,7 +6,7 @@ export default function PageTitle({ title }: { title?: string }) {
 
   return (
     <title>
-      {instanceName === "Kaneo" ? title : `${title} | ${instanceName}`}
+      {instanceName === "齐活" ? title : `${title} | ${instanceName}`}
     </title>
   );
 }
