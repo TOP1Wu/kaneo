@@ -1,4 +1,6 @@
 import { extractAssetIds } from "../../storage/cleanup-assets";
+import { publishEnsuredMember } from "../../task-member/publish-ensured-member";
+import { ensureAssigneeIsPrimaryMember } from "../../task-member/sync-primary-assignee";
 import { and, eq, inArray, isNull } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
 import db from "../../database";
@@ -160,6 +162,7 @@ async function createTask({
       message: "Create the task in an open column to make it repeat",
     });
 
+  let ensured: Awaited<ReturnType<typeof ensureAssigneeIsPrimaryMember>> = null;
   const createdTask = await db.transaction(async (tx) => {
     const taskNumber = await claimTaskNumber(projectId, tx);
     const nextPosition = await nextTaskPosition(
@@ -235,6 +238,14 @@ async function createTask({
       );
     }
 
+    if (task?.userId)
+      ensured = await ensureAssigneeIsPrimaryMember(
+        tx,
+        task.id,
+        task.userId,
+        currentUserId,
+      );
+
     return task;
   });
 
@@ -252,6 +263,7 @@ async function createTask({
     type: "created",
     content: null,
   });
+  await publishEnsuredMember(ensured, currentUserId);
 
   return {
     ...createdTask,

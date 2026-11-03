@@ -12,6 +12,7 @@ import type {
   TaskDeletedEvent,
   TaskDescriptionChangedEvent,
   TaskDueDateChangedEvent,
+  TaskMemberChangedEvent,
   TaskMovedEvent,
   TaskPriorityChangedEvent,
   TaskStatusChangedEvent,
@@ -226,6 +227,20 @@ export function initializeEventSubscriptions(): void {
       title: data.title,
     });
   });
+
+  subscribeToEvent<TaskMemberChangedEvent>(
+    "task.member_changed",
+    async (data) => {
+      await broadcastTaskMemberChanged({
+        taskId: data.taskId,
+        projectId: data.projectId,
+        workspaceId: data.workspaceId,
+        userId: data.userId || null,
+        action: data.action,
+        member: data.member,
+      });
+    },
+  );
 
   for (const event of [
     "task.label_created",
@@ -521,6 +536,28 @@ export async function broadcastTaskUnassigned(
       await plugin.onTaskUnassigned(event, context);
     } catch (error) {
       console.error(`Plugin ${plugin.type} error on task.unassigned:`, error);
+    }
+  }
+}
+
+export async function broadcastTaskMemberChanged(
+  event: TaskMemberChangedEvent,
+): Promise<void> {
+  const integrations = await getActiveIntegrations(event.projectId);
+
+  for (const integration of integrations) {
+    const plugin = getPlugin(integration.type);
+    if (!plugin?.onTaskMemberChanged) continue;
+
+    const context = createContext(integration);
+
+    try {
+      await plugin.onTaskMemberChanged(event, context);
+    } catch (error) {
+      console.error(
+        `Plugin ${plugin.type} error on task.member_changed:`,
+        error,
+      );
     }
   }
 }

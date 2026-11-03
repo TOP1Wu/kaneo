@@ -992,6 +992,7 @@ const taskUpdateEvents = [
   "task.label_created",
   "task.labels_updated",
   "task.label_deleted",
+  "task.member_changed",
   "task-relation.created",
   "task-relation.deleted",
   "comment.created",
@@ -1155,6 +1156,10 @@ for (const eventName of taskUpdateEvents) {
       case "comment.deleted":
       case "comment.updated":
         type = "COMMENT_UPDATED";
+        break;
+      // A distinct type tells clients to refetch member data, not just the task.
+      case "task.member_changed":
+        type = "TASK_MEMBERS_UPDATED";
         break;
       default:
         type = "TASK_UPDATED";

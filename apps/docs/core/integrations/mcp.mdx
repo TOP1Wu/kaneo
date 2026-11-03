@@ -114,6 +114,7 @@ Both the HTTP endpoint and stdio package expose the same tools:
 - Comments: `list_task_comments`, `create_task_comment`, `update_task_comment`, `delete_task_comment`
 - Labels: `list_workspace_labels`, `create_label`, `attach_label_to_task`, `detach_label_from_task`, `delete_label`
 - Task relations: `create_task_relation`, `get_task_relations`, `delete_task_relation`
+- Task members: `list_task_members`, `add_task_member`, `remove_task_member`, `update_task_member_progress`
 
 Use `get_task_by_ticket_id` with a key such as `KAN-12` to fetch one task directly. If the same key identifies multiple accessible tasks, pass `workspaceId` or `projectId` to select one.
 
@@ -122,6 +123,13 @@ slugs it returns are exactly the values `create_task` and `update_task_status`
 accept. Likewise `list_workspace_members` resolves the user IDs the assignee
 tools expect. Time entries have no delete endpoint on the API, so there is no
 `delete_time_entry` tool.
+
+Task members carry a role (by default 主要负责人 `owner`, 产品 `product`, 开发
+`dev`, 测试 `qa`) and their own progress: `todo`, `doing`, or `done`.
+`add_task_member` takes a `roleId`, or a role slug or name with `workspaceId`.
+`update_task_member_progress` with just a `taskId` updates your own membership;
+add `role` when you hold more than one. `get_task` includes a `members` summary.
+The first primary owner is kept in sync with the task's assignee.
 
 `get_task` and `list_tasks` don't include custom field values. Call
 `list_project_custom_fields` for a project's field IDs, types, and options, and

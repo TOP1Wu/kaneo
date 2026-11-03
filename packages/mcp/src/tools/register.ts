@@ -4,6 +4,7 @@ import { encodeCustomFieldValue } from "../kaneo/custom-field-value.js";
 import { buildFullTaskUpdateBody } from "../kaneo/task-helpers.js";
 import { errorResult, textResult } from "../utils/mcp-result.js";
 import { getCurrentUser } from "./get-current-user.js";
+import { registerTaskMemberTools } from "./task-member-tools.js";
 
 export type ToolClient = {
   readonly usingApiKey?: boolean;
@@ -248,15 +249,18 @@ export function registerTools(
     "get_task",
     {
       description:
-        "Get a task by ID. Custom field values are not included; use get_task_custom_field_values.",
+        "Get a task by ID, with a members summary (per-role done counts, readyForReview, and each member's role and progress). Custom field values are not included; use get_task_custom_field_values.",
       inputSchema: z.object({ taskId: nonEmptyString }),
     },
     async (args) =>
-      run(() =>
-        client.json(`/api/task/${encodeURIComponent(args.taskId)}`, {
-          method: "GET",
-        }),
-      ),
+      run(async () => {
+        const id = encodeURIComponent(args.taskId);
+        const task = await client.json<Record<string, unknown>>(
+          `/api/task/${id}`,
+          { method: "GET" },
+        );
+        return { ...task, members: await taskMembersSummary(client, id) };
+      }),
   );
 
   registerTool(
@@ -811,6 +815,8 @@ export function registerTools(
       ),
   );
 
+  registerTaskMemberTools(registerTool, client, run);
+
   registerTool(
     "update_task_due_date",
     {
@@ -969,4 +975,41 @@ export function registerTools(
     },
     async () => run(() => client.json("/api/notification")),
   );
+}
+
+type MembersResponse = {
+  members: Array<{
+    id: string;
+    userId: string;
+    userName: string;
+    roleName: string;
+    progress: string;
+  }>;
+  summary: unknown[];
+  readyForReview: boolean;
+};
+
+// Best effort: older servers without task members still return the task.
+async function taskMembersSummary(client: ToolClient, encodedTaskId: string) {
+  try {
+    const view = await client.json<MembersResponse>(
+      `/api/task-member/task/${encodedTaskId}`,
+      { method: "GET" },
+    );
+    return {
+      summary: view.summary,
+      readyForReview: view.readyForReview,
+      members: view.members.map(
+        ({ id, userId, userName, roleName, progress }) => ({
+          id,
+          userId,
+          userName,
+          roleName,
+          progress,
+        }),
+      ),
+    };
+  } catch {
+    return null;
+  }
 }

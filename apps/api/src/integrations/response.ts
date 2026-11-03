@@ -18,6 +18,7 @@ export const genericWebhookEventsSchema = integrationEventsSchema
     taskDueDateChanged: z.boolean(),
     taskAssigneeChanged: z.boolean(),
     taskUnassigned: z.boolean(),
+    taskMemberChanged: z.boolean(),
     dueDateReminder: z.boolean(),
   })
   .openapi("GenericWebhookEvents");
