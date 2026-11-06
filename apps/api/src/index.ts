@@ -35,7 +35,6 @@ import config from "./config";
 import customField from "./custom-field";
 import dashboard from "./dashboard";
 import taskMember from "./task-member";
-import { registerExtraEditGuard } from "./task-member/can-edit-member";
 import taskRole from "./task-role";
 import db, { getDatabase, schema } from "./database";
 import { apiErrorSchema } from "./errors/api-error-schema";
@@ -65,7 +64,6 @@ import getInstanceStatus from "./instance/controllers/get-instance-status";
 import invitation from "./invitation";
 import label from "./label";
 import leaderBoard from "./leader-board";
-import { leaderEditGuard } from "./leader-board/leader-edit-guard";
 import mattermostIntegration from "./mattermost-integration";
 import mcpRoutes, { mcpWellKnownRoutes } from "./mcp";
 import { migrateColumns } from "./migrations/column-migration";
@@ -1129,10 +1127,6 @@ export async function startServer(
     void gracefulShutdown();
   });
 }
-
-// Module scope, not runStartupTasks: tests build the app via createApp() without
-// startup tasks, and the guard must stay registered once (tests may swap it).
-registerExtraEditGuard(leaderEditGuard);
 
 const createdApp = createApp();
 const {

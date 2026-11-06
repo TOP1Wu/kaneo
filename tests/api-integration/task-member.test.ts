@@ -3,7 +3,6 @@ import type { User } from "better-auth/types";
 import { beforeEach, describe, expect, it } from "vite-plus/test";
 import db, { schema } from "../../apps/api/src/database";
 import { createApp } from "../../apps/api/src/index";
-import { registerExtraEditGuard } from "../../apps/api/src/task-member/can-edit-member";
 import { seedDefaultTaskRoles } from "../../apps/api/src/task-role/default-roles";
 import { mockAuthenticatedSession } from "./helpers/auth";
 import { resetTestDatabase } from "./helpers/database";
@@ -351,46 +350,6 @@ describe("API integration: task members", () => {
       userId: lead.id,
       eventData: { memberUserId: dev2.id, from: "开发", to: "测试" },
     });
-  });
-
-  it("consults the injected extra edit guard for other people's rows", async () => {
-    const { owner, workspace, task, roles, dev1, bystander } = await seed();
-    const view = await addMembers(owner, task.id, roles.dev.id, [dev1.id]);
-    const devRow = memberOf(view, dev1.id);
-    const seen: Array<{
-      actorId: string;
-      memberUserId: string;
-      workspaceId: string;
-    }> = [];
-    const restore = registerExtraEditGuard(async (actorId, member) => {
-      seen.push({
-        actorId,
-        memberUserId: member.userId,
-        workspaceId: member.workspaceId,
-      });
-      return actorId === bystander.id;
-    });
-    try {
-      const allowed = await call(bystander, `/task-member/${devRow.id}`, {
-        method: "PATCH",
-        body: { progress: "doing" },
-      });
-      expect(allowed.status).toBe(200);
-    } finally {
-      restore();
-    }
-    expect(seen).toEqual([
-      {
-        actorId: bystander.id,
-        memberUserId: dev1.id,
-        workspaceId: workspace.id,
-      },
-    ]);
-    const afterRestore = await call(bystander, `/task-member/${devRow.id}`, {
-      method: "PATCH",
-      body: { progress: "done" },
-    });
-    expect(afterRestore.status).toBe(403);
   });
 
   it("mirrors the first primary owner into the assignee and hands it on when they leave", async () => {

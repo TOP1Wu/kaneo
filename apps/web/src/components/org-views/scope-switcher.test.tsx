@@ -22,7 +22,7 @@ const units: OrgUnit[] = [
 const base = {
   isWorkspaceAdmin: false,
   isInstanceAdmin: false,
-  leadUnitIds: [] as string[],
+  ledSubtreeUnitIds: [] as string[],
   subordinateUserIds: [] as string[],
 };
 
@@ -73,7 +73,7 @@ describe("ScopeSwitcher", () => {
   it("offers a leader the departments they lead and their children by name", async () => {
     renderSwitcher({
       ...base,
-      leadUnitIds: ["eng"],
+      ledSubtreeUnitIds: ["eng", "mobile"],
       subordinateUserIds: ["u"],
     });
     // No bare "department" toggle: departments live in the dropdown.
@@ -97,7 +97,7 @@ describe("ScopeSwitcher", () => {
   it("switches to the picked department and shows its name", async () => {
     const onChange = renderSwitcher({
       ...base,
-      leadUnitIds: ["eng"],
+      ledSubtreeUnitIds: ["eng", "mobile"],
       subordinateUserIds: ["u"],
     });
     await unitChoices();
@@ -111,7 +111,11 @@ describe("ScopeSwitcher", () => {
 
     cleanup();
     renderSwitcher(
-      { ...base, leadUnitIds: ["eng"], subordinateUserIds: ["u"] },
+      {
+        ...base,
+        ledSubtreeUnitIds: ["eng", "mobile"],
+        subordinateUserIds: ["u"],
+      },
       { scope: "unit", unitId: "mobile" },
     );
     expect(unitPicker()).toHaveTextContent("移动组");

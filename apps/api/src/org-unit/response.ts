@@ -36,8 +36,9 @@ export const orgScopeSchema = z
   .object({
     isWorkspaceAdmin: z.boolean(),
     isInstanceAdmin: z.boolean(),
-    leadUnitIds: z.array(z.string()).openapi({
-      description: "Units where the caller is marked as a leader.",
+    ledSubtreeUnitIds: z.array(z.string()).openapi({
+      description:
+        "Units the caller leads and every unit below them: the ones they may open with scope=unit.",
     }),
     subordinateUserIds: z.array(z.string()).openapi({
       description:

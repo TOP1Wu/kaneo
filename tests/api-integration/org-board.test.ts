@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it, vi } from "vite-plus/test";
 import db, { getDatabasePool, schema } from "../../apps/api/src/database";
 import { createApp } from "../../apps/api/src/index";
 import { leaderEditGuard } from "../../apps/api/src/leader-board/leader-edit-guard";
-import { getSubordinateUserIds } from "../../apps/api/src/org-unit/get-subordinate-user-ids";
+import { getLedUnits } from "../../apps/api/src/org-unit/get-led-units";
 import { seedDefaultTaskRoles } from "../../apps/api/src/task-role/default-roles";
 import { deleteWorkspaceData } from "../../apps/api/src/workspace/lifecycle/delete-workspace-data";
 import { mockAuthenticatedSession } from "./helpers/auth";
@@ -389,20 +389,20 @@ describe("API integration: org units", () => {
     expect(await json(await scope(org.leader))).toEqual({
       isWorkspaceAdmin: false,
       isInstanceAdmin: false,
-      leadUnitIds: [org.eng.id],
+      ledSubtreeUnitIds: [org.eng.id, org.backend.id].sort(),
       subordinateUserIds: [org.manager.id, org.staff.id].sort(),
     });
     expect(await json(await scope(org.manager))).toMatchObject({
-      leadUnitIds: [org.backend.id],
+      ledSubtreeUnitIds: [org.backend.id],
       subordinateUserIds: [org.staff.id],
     });
     expect(await json(await scope(org.staff))).toMatchObject({
-      leadUnitIds: [],
+      ledSubtreeUnitIds: [],
       subordinateUserIds: [],
     });
     expect(await json(await scope(org.owner))).toMatchObject({
       isWorkspaceAdmin: true,
-      leadUnitIds: [],
+      ledSubtreeUnitIds: [],
     });
   });
 
@@ -450,7 +450,7 @@ describe("API integration: org units", () => {
   });
 });
 
-describe("getSubordinateUserIds", () => {
+describe("getLedUnits", () => {
   beforeEach(async () => {
     await resetTestDatabase();
   });
@@ -475,15 +475,20 @@ describe("getSubordinateUserIds", () => {
       .delete(schema.workspaceUserTable)
       .where(eq(schema.workspaceUserTable.userId, leaver.id));
 
-    expect(await getSubordinateUserIds(org.workspaceId, org.leader.id)).toEqual(
+    const leader = await getLedUnits(org.workspaceId, org.leader.id);
+    expect(leader.subordinateUserIds).toEqual(
       [org.manager.id, org.staff.id, org.peer.id].sort(),
     );
-    expect(await getSubordinateUserIds(org.workspaceId, org.staff.id)).toEqual(
-      [org.manager.id, org.leader.id].sort(),
+    expect(leader.direct.sort()).toEqual([org.eng.id, ops.id].sort());
+    expect(leader.subtree).toEqual(
+      expect.arrayContaining([org.eng.id, org.backend.id, ops.id]),
     );
-    expect(await getSubordinateUserIds(org.workspaceId, org.peer.id)).toEqual(
-      [],
-    );
+    expect(
+      (await getLedUnits(org.workspaceId, org.staff.id)).subordinateUserIds,
+    ).toEqual([org.manager.id, org.leader.id].sort());
+    expect(
+      (await getLedUnits(org.workspaceId, org.peer.id)).subordinateUserIds,
+    ).toEqual([]);
     expect(ops.id).toBeTruthy();
   });
 
@@ -491,7 +496,7 @@ describe("getSubordinateUserIds", () => {
     const org = await seedOrg();
     const other = await createWorkspaceMember();
     expect(
-      await getSubordinateUserIds(other.workspace.id, org.leader.id),
+      (await getLedUnits(other.workspace.id, org.leader.id)).subordinateUserIds,
     ).toEqual([]);
   });
 });
@@ -1023,39 +1028,31 @@ describe("leaderEditGuard", () => {
 
   it("allows leaders over their recursive subordinates only", async () => {
     const org = await seedBoard();
-    const taskId = org.tasks.overdueTask.id;
 
-    expect(
-      await leaderEditGuard(org.leader.id, { taskId, userId: org.staff.id }),
-    ).toBe(true);
-    expect(
-      await leaderEditGuard(org.manager.id, { taskId, userId: org.staff.id }),
-    ).toBe(true);
-    expect(
-      await leaderEditGuard(org.staff.id, { taskId, userId: org.manager.id }),
-    ).toBe(false);
-    expect(
-      await leaderEditGuard(org.leader.id, { taskId, userId: org.leader.id }),
-    ).toBe(false);
-    expect(
-      await leaderEditGuard(org.leader.id, {
-        taskId: "missing",
-        userId: org.staff.id,
-      }),
-    ).toBe(false);
+    const member = (userId: string) => ({
+      userId,
+      workspaceId: org.workspaceId,
+    });
 
+    expect(await leaderEditGuard(org.leader.id, member(org.staff.id))).toBe(
+      true,
+    );
+    expect(await leaderEditGuard(org.manager.id, member(org.staff.id))).toBe(
+      true,
+    );
+    expect(await leaderEditGuard(org.staff.id, member(org.manager.id))).toBe(
+      false,
+    );
+    expect(await leaderEditGuard(org.leader.id, member(org.leader.id))).toBe(
+      false,
+    );
+
+    // The caller passes the task's own workspace, so another workspace denies.
     const other = await createWorkspaceMember();
-    const elsewhere = await createProjectFixture({
-      workspaceId: other.workspace.id,
-    });
-    const foreignTask = await addTask(elsewhere, {
-      title: "Other workspace",
-      assigneeId: other.user.id,
-    });
     expect(
       await leaderEditGuard(org.leader.id, {
-        taskId: foreignTask.id,
         userId: org.staff.id,
+        workspaceId: other.workspace.id,
       }),
     ).toBe(false);
   });

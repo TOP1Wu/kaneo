@@ -7305,12 +7305,12 @@
           "isInstanceAdmin": {
             "type": "boolean"
           },
-          "leadUnitIds": {
+          "ledSubtreeUnitIds": {
             "type": "array",
             "items": {
               "type": "string"
             },
-            "description": "Units where the caller is marked as a leader."
+            "description": "Units the caller leads and every unit below them: the ones they may open with scope=unit."
           },
           "subordinateUserIds": {
             "type": "array",
@@ -7323,7 +7323,7 @@
         "required": [
           "isWorkspaceAdmin",
           "isInstanceAdmin",
-          "leadUnitIds",
+          "ledSubtreeUnitIds",
           "subordinateUserIds"
         ]
       },

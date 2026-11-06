@@ -3,11 +3,11 @@ import type { ScopeName, ScopeSelection } from "./scope-query";
 type MyScope = {
   isWorkspaceAdmin: boolean;
   isInstanceAdmin: boolean;
-  leadUnitIds: readonly string[];
+  ledSubtreeUnitIds: readonly string[];
   subordinateUserIds: readonly string[];
 };
 
-type ScopeUnit = { id: string; parentId: string | null };
+type ScopeUnit = { id: string };
 
 export type ScopeOptions = {
   scopes: ScopeName[];
@@ -16,41 +16,19 @@ export type ScopeOptions = {
   defaultSelection: ScopeSelection;
 };
 
-/** Units a leader can open: the ones they lead and everything below them. */
-function ledSubtrees(
-  units: readonly ScopeUnit[],
-  leadUnitIds: readonly string[],
-) {
-  const result = new Set(leadUnitIds);
-  let grew = true;
-  while (grew) {
-    grew = false;
-    for (const unit of units) {
-      if (unit.parentId && result.has(unit.parentId) && !result.has(unit.id)) {
-        result.add(unit.id);
-        grew = true;
-      }
-    }
-  }
-  return result;
-}
-
 /**
  * Which scopes the switcher offers. It mirrors the API's rules so nobody is
- * offered a 403: everyone has "mine", leaders open the units they lead (and
- * their descendants), and admins open any unit and "all".
+ * offered a 403: everyone has "mine", leaders open the units they lead (the
+ * subtree /my-scope resolved), and admins open any unit and "all".
  */
 export function scopeOptions(
   scope: MyScope | undefined,
   units: readonly ScopeUnit[],
 ): ScopeOptions {
   const isAdmin = Boolean(scope?.isWorkspaceAdmin || scope?.isInstanceAdmin);
-  const known = new Set(units.map((unit) => unit.id));
   const unitIds = isAdmin
     ? units.map((unit) => unit.id)
-    : [...ledSubtrees(units, scope?.leadUnitIds ?? [])].filter((id) =>
-        known.has(id),
-      );
+    : [...(scope?.ledSubtreeUnitIds ?? [])];
 
   const scopes: ScopeName[] = ["mine"];
   if (unitIds.length > 0) scopes.push("unit");

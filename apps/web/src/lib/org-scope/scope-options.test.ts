@@ -10,7 +10,7 @@ const units = [
 const member = {
   isWorkspaceAdmin: false,
   isInstanceAdmin: false,
-  leadUnitIds: [],
+  ledSubtreeUnitIds: [],
   subordinateUserIds: [],
 };
 
@@ -25,7 +25,11 @@ describe("scopeOptions", () => {
 
   it("lets a leader open the units they lead and their children", () => {
     const options = scopeOptions(
-      { ...member, leadUnitIds: ["eng"], subordinateUserIds: ["u1"] },
+      {
+        ...member,
+        ledSubtreeUnitIds: ["eng", "mobile"],
+        subordinateUserIds: ["u1"],
+      },
       units,
     );
     expect(options.scopes).toEqual(["mine", "unit"]);
@@ -67,7 +71,11 @@ describe("scopeOptions", () => {
 
 describe("resolveSelection", () => {
   const leader = scopeOptions(
-    { ...member, leadUnitIds: ["eng"], subordinateUserIds: ["u1"] },
+    {
+      ...member,
+      ledSubtreeUnitIds: ["eng", "mobile"],
+      subordinateUserIds: ["u1"],
+    },
     units,
   );
 

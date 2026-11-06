@@ -6,8 +6,7 @@ import {
   userTable,
   workspaceUserTable,
 } from "../../database/schema";
-import { getLedUnitIds } from "../get-led-unit-ids";
-import { getSubordinateUserIds } from "../get-subordinate-user-ids";
+import { getLedUnits } from "../get-led-units";
 import { getUnitSubtreeUserIds } from "../get-unit-subtree-user-ids";
 import { isWorkspaceAdmin } from "../is-workspace-admin";
 import { resolveScope, type ScopeName, trustedPeople } from "./resolve-scope";
@@ -57,9 +56,9 @@ export async function loadScope({
   scope: ScopeName;
   unitId?: string;
 }): Promise<LoadedScope> {
-  const [workspaceAdmin, ledUnits, exists] = await Promise.all([
+  const [workspaceAdmin, led, exists] = await Promise.all([
     isWorkspaceAdmin(workspaceId, actorId),
-    getLedUnitIds(workspaceId, actorId),
+    getLedUnits(workspaceId, actorId),
     scope === "unit" && unitId
       ? unitExists(workspaceId, unitId)
       : Promise.resolve(false),
@@ -69,7 +68,7 @@ export async function loadScope({
     actorId,
     isWorkspaceAdmin: workspaceAdmin,
     isInstanceAdmin,
-    ledSubtreeUnitIds: ledUnits.subtree,
+    ledSubtreeUnitIds: led.subtree,
     unitExists: exists,
   });
   if (!rule.ok) {
@@ -82,12 +81,7 @@ export async function loadScope({
   } else if (scope === "unit" && unitId) {
     people = await getUnitSubtreeUserIds(workspaceId, unitId);
   } else {
-    people = [
-      actorId,
-      ...(ledUnits.direct.length > 0
-        ? await getSubordinateUserIds(workspaceId, actorId)
-        : []),
-    ];
+    people = [actorId, ...led.subordinateUserIds];
   }
 
   return {

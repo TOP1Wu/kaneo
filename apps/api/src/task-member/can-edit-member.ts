@@ -2,6 +2,7 @@ import type { Context } from "hono";
 import { and, eq } from "drizzle-orm";
 import db from "../database";
 import { taskMemberTable, taskRoleTable } from "../database/schema";
+import { leaderEditGuard } from "../leader-board/leader-edit-guard";
 import { hasWorkspacePermission } from "../utils/require-workspace-permission";
 
 /** The member row a guard decides on. */
@@ -12,26 +13,6 @@ export type EditableMember = {
   roleId: string;
   workspaceId: string;
 };
-
-/**
- * Extra permission to edit someone else's progress/note, e.g. an org leader
- * editing a report's row. Return true to allow; never throw to deny.
- */
-export type ExtraEditGuard = (
-  actorId: string,
-  member: EditableMember,
-) => Promise<boolean>;
-
-let extraEditGuard: ExtraEditGuard = async () => false;
-
-/** Replace the extra guard. Returns a function that restores the previous one. */
-export function registerExtraEditGuard(fn: ExtraEditGuard): () => void {
-  const previous = extraEditGuard;
-  extraEditGuard = fn;
-  return () => {
-    extraEditGuard = previous;
-  };
-}
 
 /** Whether the actor holds a primary-owner role on the task. */
 export async function isTaskPrimaryOwner(actorId: string, taskId: string) {
@@ -73,6 +54,6 @@ export async function canEditMemberProgress(
   return (
     (await isTaskPrimaryOwner(actorId, member.taskId)) ||
     (await isWorkspaceManager(c)) ||
-    (await extraEditGuard(actorId, member).catch(() => false))
+    (await leaderEditGuard(actorId, member).catch(() => false))
   );
 }

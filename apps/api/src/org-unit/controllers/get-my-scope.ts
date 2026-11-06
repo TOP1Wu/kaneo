@@ -1,5 +1,4 @@
-import { getLedUnitIds } from "../get-led-unit-ids";
-import { getSubordinateUserIds } from "../get-subordinate-user-ids";
+import { getLedUnits } from "../get-led-units";
 import { isWorkspaceAdmin } from "../is-workspace-admin";
 
 export async function getMyScope(
@@ -7,15 +6,14 @@ export async function getMyScope(
   userId: string,
   isInstanceAdmin: boolean,
 ) {
-  const [workspaceAdmin, ledUnits, subordinateUserIds] = await Promise.all([
+  const [workspaceAdmin, led] = await Promise.all([
     isWorkspaceAdmin(workspaceId, userId),
-    getLedUnitIds(workspaceId, userId),
-    getSubordinateUserIds(workspaceId, userId),
+    getLedUnits(workspaceId, userId),
   ]);
   return {
     isWorkspaceAdmin: workspaceAdmin,
     isInstanceAdmin,
-    leadUnitIds: ledUnits.direct,
-    subordinateUserIds,
+    ledSubtreeUnitIds: led.subtree,
+    subordinateUserIds: led.subordinateUserIds,
   };
 }
