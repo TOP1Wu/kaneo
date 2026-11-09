@@ -352,6 +352,90 @@ describe("API integration: task members", () => {
     });
   });
 
+  it("hands a seat to someone else, starting their progress over and logging both ends", async () => {
+    const { owner, workspace, task, roles, lead, dev1, dev2, qa } =
+      await seed();
+    await addMembers(owner, task.id, roles.owner.id, [lead.id]);
+    const view = await addMembers(owner, task.id, roles.dev.id, [dev1.id]);
+    const seat = memberOf(view, dev1.id);
+
+    // dev1 works on the seat and leaves a note on it.
+    await call(dev1, `/task-member/${seat.id}`, {
+      method: "PATCH",
+      body: { progress: "done", note: "看过了" },
+    });
+
+    // A peer viewer can't take a seat; that is member management.
+    const denied = await call(dev2, `/task-member/${seat.id}`, {
+      method: "PATCH",
+      body: { userId: qa.id },
+    });
+    expect(denied.status).toBe(403);
+
+    // The primary owner hands the seat to dev2: same row, same place, fresh progress.
+    const reassigned = await json<MembersView>(
+      await call(lead, `/task-member/${seat.id}`, {
+        method: "PATCH",
+        body: { userId: dev2.id },
+      }),
+    );
+    expect(memberOf(reassigned, dev2.id, roles.dev.id)).toMatchObject({
+      id: seat.id,
+      roleSlug: "dev",
+      position: seat.position,
+      progress: "todo",
+      startedAt: null,
+      doneAt: null,
+      note: null,
+      updatedBy: lead.id,
+    });
+    expect(reassigned.members.some((m) => m.userId === dev1.id)).toBe(false);
+    // Activities in one transaction share a timestamp, so match on the person.
+    const log = await memberActivities(task.id);
+    const forPerson = (type: string, userId: string) =>
+      log.find(
+        (a) =>
+          a.type === type &&
+          (a.eventData as { memberUserId?: string } | null)?.memberUserId ===
+            userId,
+      );
+    expect(forPerson("member_removed", dev1.id)).toMatchObject({
+      userId: lead.id,
+      eventData: { memberUserId: dev1.id, roleName: "开发" },
+    });
+    expect(forPerson("member_added", dev2.id)).toMatchObject({
+      userId: lead.id,
+      eventData: { memberUserId: dev2.id, roleName: "开发" },
+    });
+
+    // The same person can't hold one role twice on the same task.
+    await addMembers(owner, task.id, roles.dev.id, [qa.id]);
+    const duplicate = await call(
+      owner,
+      `/task-member/${memberOf(reassigned, dev2.id, roles.dev.id).id}`,
+      { method: "PATCH", body: { userId: qa.id } },
+    );
+    expect(duplicate.status).toBe(409);
+
+    // Someone who can't see the project can't take the seat either.
+    const other = await createProjectFixture({ workspaceId: workspace.id });
+    const restricted = await addWorkspaceMember(workspace.id, "member");
+    await restrictToProjects(workspace.id, restricted.id, [other.project.id]);
+    const hidden = await call(owner, `/task-member/${seat.id}`, {
+      method: "PATCH",
+      body: { userId: restricted.id },
+    });
+    expect(hidden.status).toBe(403);
+
+    // Swapping the primary-owner seat moves the mirrored assignee with it.
+    const ownerSeat = memberOf(reassigned, lead.id, roles.owner.id);
+    await call(owner, `/task-member/${ownerSeat.id}`, {
+      method: "PATCH",
+      body: { userId: dev1.id },
+    });
+    expect(await taskAssignee(task.id)).toBe(dev1.id);
+  });
+
   it("mirrors the first primary owner into the assignee and hands it on when they leave", async () => {
     const { owner, task, roles, lead, dev1, dev2, qa } = await seed();
 

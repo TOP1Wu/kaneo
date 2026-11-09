@@ -4102,7 +4102,8 @@
 			"searchPeople": "Search people",
 			"title": "Members",
 			"updateError": "Couldn't update the member",
-			"you": "(you)"
+			"you": "(you)",
+			"changePersonFor": "Change person for {{name}}"
 		}
 	},
 	"invitations": {

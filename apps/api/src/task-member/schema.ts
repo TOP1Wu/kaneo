@@ -19,6 +19,10 @@ export const addTaskMembersBody = z.object({
 });
 
 export const updateTaskMemberBody = z.object({
+  userId: z.string().min(1).optional().openapi({
+    description:
+      "Another person takes over this membership. Their progress starts over at todo and their note is cleared.",
+  }),
   roleId: z.string().min(1).optional(),
   progress: memberProgress.optional(),
   note: z.string().max(2000).nullable().optional(),

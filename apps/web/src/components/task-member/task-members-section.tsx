@@ -93,6 +93,14 @@ export function TaskMembersSection({
     );
   };
 
+  // Another person takes the seat: their progress starts over on the server.
+  const changePerson = (member: TaskMember, userId: string) => {
+    updateMember.mutate(
+      { memberId: member.id, taskId, projectId, body: { userId } },
+      { onError: (error) => fail(error, "tasks:members.updateError") },
+    );
+  };
+
   const remove = (member: TaskMember) => {
     removeMember.mutate(member.id, {
       onError: (error) => fail(error, "tasks:members.removeError"),
@@ -158,19 +166,29 @@ export function TaskMembersSection({
                   </span>
                 </h4>
                 <ul className="flex flex-col">
-                  {group.members.map((member) => (
-                    <MemberRow
-                      key={member.id}
-                      member={member}
-                      isSelf={member.userId === user?.id}
-                      access={progressAccess(member, members, viewer)}
-                      canManage={canManage}
-                      roles={activeRoles}
-                      onProgress={requestProgress}
-                      onChangeRole={changeRole}
-                      onRemove={remove}
-                    />
-                  ))}
+                  {group.members.map((member) => {
+                    // People who already hold the role on another seat are taken.
+                    const candidates = projectMembers.filter(
+                      (person) =>
+                        person.id === member.userId ||
+                        !group.members.some((row) => row.userId === person.id),
+                    );
+                    return (
+                      <MemberRow
+                        key={member.id}
+                        member={member}
+                        isSelf={member.userId === user?.id}
+                        access={progressAccess(member, members, viewer)}
+                        canManage={canManage}
+                        roles={activeRoles}
+                        candidates={candidates}
+                        onProgress={requestProgress}
+                        onChangeRole={changeRole}
+                        onChangePerson={changePerson}
+                        onRemove={remove}
+                      />
+                    );
+                  })}
                 </ul>
               </div>
             );

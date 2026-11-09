@@ -143,7 +143,7 @@ const updateTaskMemberRoute = createRoute({
   tags: ["Task Members"],
   summary: "Update task member",
   description:
-    "Change a member's progress, note, role, or order. Members update their own progress and note; primary owners and workspace admins can do it on their behalf, which the activity log records. Changing role or order needs member management rights.",
+    "Change a member's progress, note, role, order, or hand the seat to someone else with userId, which restarts that seat at todo. Members update their own progress and note; primary owners and workspace admins can do it on their behalf and reassign seats. Reassigning, role, and order changes need member management rights.",
   middleware: [
     workspaceAccessFromTaskMember("memberId"),
     READ,
@@ -160,7 +160,7 @@ const updateTaskMemberRoute = createRoute({
     200: jsonResponse("The task's members after the change", taskMembersSchema),
     400: errorResponse("Invalid body, or the role is archived"),
     403: errorResponse("Not allowed to make this change"),
-    404: errorResponse("Task member or role not found"),
+    404: errorResponse("Task member, role, or user not found"),
     409: errorResponse("The user already holds that role on this task"),
   },
 });

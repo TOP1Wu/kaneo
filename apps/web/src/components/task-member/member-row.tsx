@@ -1,4 +1,10 @@
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { PersonPicker } from "@/components/common/person-picker";
+import {
+  type Person,
+  personMenuOptions,
+} from "@/components/common/person-menu-options";
 import { AssigneeAvatar } from "@/components/task/properties/assignee-avatar";
 import { sectionRowClass } from "@/components/task/sections/section-row-class";
 import type {
@@ -18,8 +24,11 @@ type MemberRowProps = {
   access: ProgressAccess;
   canManage: boolean;
   roles: readonly TaskRole[];
+  /** People who may take this seat; the current holder is included. */
+  candidates: readonly Person[];
   onProgress: (member: TaskMember, progress: MemberProgress) => void;
   onChangeRole: (member: TaskMember, roleId: string) => void;
+  onChangePerson: (member: TaskMember, userId: string) => void;
   onRemove: (member: TaskMember) => void;
 };
 
@@ -29,14 +38,20 @@ export function MemberRow({
   access,
   canManage,
   roles,
+  candidates,
   onProgress,
   onChangeRole,
+  onChangePerson,
   onRemove,
 }: MemberRowProps) {
   const { t } = useTranslation();
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const personLabel = t("tasks:members.changePersonFor", {
+    name: member.userName,
+  });
 
-  return (
-    <li className={cn(sectionRowClass, "hover:bg-accent/50")}>
+  const person = (
+    <>
       <AssigneeAvatar
         name={member.userName}
         image={member.userImage}
@@ -51,6 +66,34 @@ export function MemberRow({
           </span>
         )}
       </span>
+    </>
+  );
+
+  return (
+    <li className={cn(sectionRowClass, "hover:bg-accent/50")}>
+      {canManage ? (
+        <PersonPicker
+          open={pickerOpen}
+          onOpenChange={setPickerOpen}
+          label={personLabel}
+          placeholder={t("tasks:members.searchPeople")}
+          options={personMenuOptions(candidates, member.userId)}
+          onSelect={(userId) => {
+            setPickerOpen(false);
+            if (userId !== member.userId) onChangePerson(member, userId);
+          }}
+        >
+          <button
+            type="button"
+            aria-label={personLabel}
+            className="flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 self-stretch rounded-sm text-left outline-none hover:underline hover:decoration-dotted hover:underline-offset-2 focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            {person}
+          </button>
+        </PersonPicker>
+      ) : (
+        person
+      )}
       {member.doneAt && member.progress === "done" && (
         <span
           className="hidden shrink-0 text-muted-foreground text-xs tabular-nums sm:inline"

@@ -3831,7 +3831,8 @@
 			"searchPeople": "Search people",
 			"title": "Members",
 			"updateError": "Couldn't update the member",
-			"you": "(you)"
+			"you": "(you)",
+			"changePersonFor": "更換 {{name}} 的人員"
 		}
 	},
 	"invitations": {

@@ -26144,7 +26144,7 @@
           "Task Members"
         ],
         "summary": "Update task member",
-        "description": "Change a member's progress, note, role, or order. Members update their own progress and note; primary owners and workspace admins can do it on their behalf, which the activity log records. Changing role or order needs member management rights.",
+        "description": "Change a member's progress, note, role, order, or hand the seat to someone else with userId, which restarts that seat at todo. Members update their own progress and note; primary owners and workspace admins can do it on their behalf and reassign seats. Reassigning, role, and order changes need member management rights.",
         "parameters": [
           {
             "schema": {
@@ -26162,6 +26162,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
+                  "userId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "Another person takes over this membership. Their progress starts over at todo and their note is cleared."
+                  },
                   "roleId": {
                     "type": "string",
                     "minLength": 1
@@ -26234,7 +26239,7 @@
             }
           },
           "404": {
-            "description": "Task member or role not found",
+            "description": "Task member, role, or user not found",
             "content": {
               "application/json": {
                 "schema": {

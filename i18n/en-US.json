@@ -3889,6 +3889,7 @@
 			"searchPeople": "Search people",
 			"noCandidates": "No one else can take this role here.",
 			"changeRole": "Change role",
+			"changePersonFor": "Change person for {{name}}",
 			"remove": "Remove from task",
 			"actionsFor": "Actions for {{name}}",
 			"you": "(you)",

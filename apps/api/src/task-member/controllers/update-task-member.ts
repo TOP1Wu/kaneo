@@ -1,6 +1,12 @@
 import { and, eq, sql } from "drizzle-orm";
 import { HTTPException } from "hono/http-exception";
-import { taskMemberTable, taskRoleTable } from "../../database/schema";
+import {
+  taskMemberTable,
+  taskRoleTable,
+  userTable,
+} from "../../database/schema";
+import { filterUsersWithProjectAccess } from "../../project-access/filter-users-with-project-access";
+import { filterAssignableUsers } from "../../utils/assert-assignable-user";
 import { loadTaskMembers, taskMembersView } from "../load-task-members";
 import {
   type MemberActivity,
@@ -17,6 +23,7 @@ import type { TaskScope } from "../task-scope";
 import { allDone, withLockedTaskMembers } from "../with-locked-task-members";
 
 export type UpdateTaskMemberInput = {
+  userId?: string;
   roleId?: string;
   progress?: MemberProgress;
   note?: string | null;
@@ -46,6 +53,64 @@ async function updateTaskMember(
       const activities: MemberActivity[] = [];
       const changes: Partial<typeof taskMemberTable.$inferInsert> = {};
 
+      // Handing the seat to someone else starts their progress over: the old
+      // person's note and timestamps don't describe the new one.
+      const takeover =
+        input.userId !== undefined && input.userId !== member.userId
+          ? input.userId
+          : null;
+      let next: { memberUserId: string; memberUserName: string } | null = null;
+      if (takeover) {
+        if (
+          before.some(
+            (row) => row.userId === takeover && row.roleId === member.roleId,
+          )
+        )
+          throw new HTTPException(409, {
+            message: "The user already holds that role on this task",
+          });
+
+        // Whoever takes the seat must see the task, the same bar as an assignee.
+        const assignable = await filterAssignableUsers(
+          [takeover],
+          scope.workspaceId,
+          tx,
+        );
+        const visible = await filterUsersWithProjectAccess(
+          [...assignable],
+          scope.projectId,
+          tx,
+        );
+        if (!visible.has(takeover))
+          throw new HTTPException(403, {
+            message: "That user can't access this task's project",
+          });
+
+        const [taker] = await tx
+          .select({ id: userTable.id, name: userTable.name })
+          .from(userTable)
+          .where(eq(userTable.id, takeover))
+          .limit(1);
+        if (!taker) throw new HTTPException(404, { message: "User not found" });
+        next = { memberUserId: taker.id, memberUserName: taker.name };
+        Object.assign(changes, {
+          userId: taker.id,
+          progress: "todo",
+          startedAt: null,
+          doneAt: null,
+          note: null,
+        });
+        activities.push(
+          { type: "member_removed", data: base },
+          {
+            type: "member_added",
+            data: { ...base, ...next },
+          },
+        );
+      }
+      // Every other activity describes the person who ends up holding the seat.
+      const holder = next ? { ...base, ...next } : base;
+
       if (input.roleId !== undefined && input.roleId !== member.roleId) {
         const [role] = await tx
           .select()
@@ -63,7 +128,8 @@ async function updateTaskMember(
           throw new HTTPException(400, { message: "Task role is archived" });
         if (
           before.some(
-            (row) => row.userId === member.userId && row.roleId === role.id,
+            (row) =>
+              row.userId === holder.memberUserId && row.roleId === role.id,
           )
         )
           throw new HTTPException(409, {
@@ -84,7 +150,7 @@ async function updateTaskMember(
         activities.push({
           type: "member_role_changed",
           data: {
-            ...base,
+            ...holder,
             roleId: role.id,
             roleName: role.name,
             from: member.roleName,
@@ -95,9 +161,13 @@ async function updateTaskMember(
       }
 
       if (input.position !== undefined) changes.position = input.position;
-      if (input.note !== undefined) changes.note = input.note;
+      if (!takeover && input.note !== undefined) changes.note = input.note;
 
-      if (input.progress !== undefined && input.progress !== member.progress) {
+      if (
+        !takeover &&
+        input.progress !== undefined &&
+        input.progress !== member.progress
+      ) {
         Object.assign(
           changes,
           { progress: input.progress },
@@ -111,7 +181,7 @@ async function updateTaskMember(
         activities.push({
           type: "member_progress_changed",
           data: {
-            ...base,
+            ...holder,
             from: member.progress,
             to: input.progress,
             onBehalfOf,

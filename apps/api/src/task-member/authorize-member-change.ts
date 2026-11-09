@@ -16,13 +16,14 @@ export async function authorizeManageMembers(c: Context, taskId: string) {
 }
 
 /**
- * Role and order changes move people in and out of the primary-owner slot, so
- * they need member management; progress and note need the edit right.
+ * Handing a seat to someone else, or moving it between roles and positions,
+ * needs member management; progress and note need the edit right.
  */
 export async function authorizeMemberUpdate(
   c: Context,
   memberId: string,
   input: {
+    userId?: string;
     roleId?: string;
     position?: number;
     progress?: string;
@@ -35,11 +36,13 @@ export async function authorizeMemberUpdate(
   const scope = await loadTaskScope(member.taskId);
 
   if (
-    (input.roleId !== undefined || input.position !== undefined) &&
+    (input.userId !== undefined ||
+      input.roleId !== undefined ||
+      input.position !== undefined) &&
     !(await canManageTaskMembers(c, member.taskId))
   )
     throw forbidden(
-      "Only the task's primary owner or a workspace admin can change roles",
+      "Only the task's primary owner or a workspace admin can reassign members",
     );
 
   if (

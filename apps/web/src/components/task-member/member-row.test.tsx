@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vite-plus/test";
 import type { TaskMember } from "@/fetchers/task-member/get-task-members";
 import { MemberRow } from "./member-row";
@@ -34,7 +34,16 @@ const member: TaskMember = {
   updatedBy: "u-qa",
 };
 
-function renderRow(canEdit: boolean, canManage = false) {
+const candidates = [
+  { id: "u-qa", name: "王悦", email: null, image: null },
+  { id: "u-dev", name: "李雷", email: null, image: null },
+];
+
+function renderRow(
+  canEdit: boolean,
+  canManage = false,
+  onChangePerson = vi.fn(),
+) {
   render(
     <MemberRow
       member={member}
@@ -42,8 +51,10 @@ function renderRow(canEdit: boolean, canManage = false) {
       access={{ canEdit, onBehalf: canEdit }}
       canManage={canManage}
       roles={[]}
+      candidates={candidates}
       onProgress={vi.fn()}
       onChangeRole={vi.fn()}
+      onChangePerson={onChangePerson}
       onRemove={vi.fn()}
     />,
   );
@@ -76,5 +87,27 @@ describe("MemberRow", () => {
     expect(
       screen.getByRole("button", { name: /tasks:members.actionsFor/ }),
     ).toBeTruthy();
+  });
+
+  it("lets a manager hand the seat to someone else from the name", () => {
+    const onChangePerson = vi.fn();
+    // Someone else's row can still be reassigned by a member manager.
+    renderRow(false, true, onChangePerson);
+    fireEvent.click(
+      screen.getByRole("button", { name: /tasks:members.changePersonFor/ }),
+    );
+    const option = screen
+      .getAllByRole("option")
+      .find((item) => item.textContent?.includes("李雷"));
+    expect(option).toBeTruthy();
+    fireEvent.click(option as HTMLElement);
+    expect(onChangePerson).toHaveBeenCalledWith(member, "u-dev");
+  });
+
+  it("does not open a person picker without member management", () => {
+    renderRow(true, false);
+    expect(
+      screen.queryByRole("button", { name: /tasks:members.changePersonFor/ }),
+    ).toBeNull();
   });
 });

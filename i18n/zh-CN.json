@@ -3831,7 +3831,8 @@
 				"todo": "未开始",
 				"doing": "进行中",
 				"done": "已完成"
-			}
+			},
+			"changePersonFor": "更换 {{name}} 的人员"
 		}
 	},
 	"invitations": {
